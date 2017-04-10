@@ -2,12 +2,14 @@
             xmlns:h="http://java.sun.com/jsf/html"
             xmlns:b="http://bootsfaces.net/ui"
             xmlns:p="http://primefaces.org/ui">
-    <h:panelGrid>
-        <p:dataTable value="#{contenido.comida}" var="c"
-                     scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="250">
-            <p:column>
-                <b:label severity="primary" text="#{c.comida.nombreComida}" tiny-screen="one-fourth" style="font-size: small"/>
-            </p:column>
-        </p:dataTable>
-    </h:panelGrid>
+    <h:form>
+        <p:panel id="datos">
+            <p:dataTable value="#{contenido.comida}" var="c"
+                         scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="250">
+                <p:column>
+                    <b:label severity="primary" text="#{c.comida.nombreComida}" tiny-screen="one-fourth" style="font-size: small"/>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+    </h:form>
 </html>

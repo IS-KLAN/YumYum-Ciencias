@@ -3,7 +3,8 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
             xmlns:ui="http://java.sun.com/jsf/facelets"
             xmlns:h="http://java.sun.com/jsf/html"
-            xmlns:b="http://bootsfaces.net/ui">
+            xmlns:b="http://bootsfaces.net/ui"
+            xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>YumYum Ciencias - Detalles de puesto</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -26,9 +27,13 @@
                 </b:navBar>
         </b:container>
         <p><b:messages/></p>
-        <b:container id="content">
-            <h:outputLabel for="title" value="Puesto #{contenido.puesto.nombrePuesto}" style="font-size: large"/>
-            <b:tabView id="tabViewID">
+        <b:container>
+            <h:outputLabel value="Puesto #{contenido.puesto.nombrePuesto}" style="font-size: large">
+                <h:form>
+                    <p:rating value="#{contenido.calificacionGlobal}" readonly="true" />
+                </h:form>
+            </h:outputLabel>
+            <b:tabView>
                 <b:tab title="Descripción">
                     <ui:include src="perfilPuesto/descripcion.xhtml" />
                 </b:tab>
