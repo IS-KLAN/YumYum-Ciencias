@@ -7,9 +7,11 @@ package com.klan.proyecto.web;
 
 import java.util.List;
 
-import com.klan.proyecto.controlador.ComidaPuestoC;
 import com.klan.proyecto.controlador.EvaluacionC;
+import com.klan.proyecto.controlador.UsuarioC;
+import com.klan.proyecto.controlador.PuestoC;
 import com.klan.proyecto.controlador.exceptions.NonexistentEntityException;
+import com.klan.proyecto.controlador.exceptions.PreexistingEntityException;
 import com.klan.proyecto.modelo.ComidaPuesto;
 import com.klan.proyecto.modelo.Evaluacion;
 import com.klan.proyecto.modelo.EvaluacionPK;
@@ -38,7 +40,7 @@ public class Contenido implements Serializable{
     private Puesto puesto;
     private String comentario = "";
     private int calificacion = 0;
-    private double calificacionGlobal = 0.0;
+    private int calificacionGlobal = 0;
     private List<Evaluacion> evaluaciones;
     private List<ComidaPuesto> comida;
     private final HttpServletRequest httpServletRequest; // Obtiene información de todas las peticiones de usuario.
@@ -49,39 +51,33 @@ public class Contenido implements Serializable{
      * las variables necesarias para las consultas.
      */
     public Contenido() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("YumYum-Ciencias");
         faceContext = FacesContext.getCurrentInstance();
         httpServletRequest = (HttpServletRequest) faceContext.getExternalContext().getRequest();
-        if (httpServletRequest.getSession().getAttribute("usuario") != null) {
-            usuario = ((Usuario)httpServletRequest.getSession().getAttribute("usuario"));
-        } else usuario = new Usuario("luis");
         if (httpServletRequest.getSession().getAttribute("puesto") != null) {
-            puesto = ((Puesto)httpServletRequest.getSession().getAttribute("puesto"));
-        } else puesto = new Puesto("harry");
+            Puesto p = ((Puesto)httpServletRequest.getSession().getAttribute("puesto"));
+            puesto = new PuestoC(emf).findPuesto(p.getNombrePuesto());
+        } else puesto = new Puesto("Harry");
+        if (httpServletRequest.getSession().getAttribute("usuario") != null) {
+            Usuario u = ((Usuario)httpServletRequest.getSession().getAttribute("usuario"));
+            usuario = new UsuarioC(emf).findUsuario(u.getNombreUsuario());
+        } else usuario = new Usuario("luis");
     }
     
     @PostConstruct
     public void init() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("YumYum-Ciencias");
-        String p = puesto.getNombrePuesto(), u = usuario.getNombreUsuario();
-        Evaluacion actual = new EvaluacionC(emf).findEvaluacion(new EvaluacionPK(p, u));
-        comida = new ComidaPuestoC(emf).findByNombrePuesto(p);
-        evaluaciones = new EvaluacionC(emf).findByNombrePuesto(p);
+        EvaluacionPK id = new EvaluacionPK(puesto.getNombrePuesto(), usuario.getNombreUsuario());
+        Evaluacion actual = new EvaluacionC(emf).findEvaluacion(id);
         calificacion = (actual != null)? actual.getCalificacion() : 0;
         comentario = (actual != null)? actual.getComentario() : "";
-        for (Evaluacion e : evaluaciones) calificacionGlobal += e.getCalificacion();
-        calificacionGlobal /= evaluaciones.size();        
-    }
-    
-    public void actualiza() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("YumYum-Ciencias");
-        String p = puesto.getNombrePuesto(), u = usuario.getNombreUsuario();
-        Evaluacion actual = new EvaluacionC(emf).findEvaluacion(new EvaluacionPK(p, u));
-        comida = new ComidaPuestoC(emf).findByNombrePuesto(p);
-        evaluaciones = new EvaluacionC(emf).findByNombrePuesto(p);
-        calificacion = (actual != null)? actual.getCalificacion() : 0;
-        comentario = (actual != null)? actual.getComentario() : "";
-        for (Evaluacion e : evaluaciones) calificacionGlobal += e.getCalificacion();
-        calificacionGlobal /= evaluaciones.size();        
+        comida = puesto.getComidaPuestoList();
+        evaluaciones = puesto.getEvaluacionList();
+        if (evaluaciones != null && evaluaciones.size() > 0) {
+            calificacionGlobal = 0;
+            for (Evaluacion e : evaluaciones) calificacionGlobal += e.getCalificacion();
+            calificacionGlobal /= evaluaciones.size();
+        }
     }
 
     /**
@@ -152,7 +148,7 @@ public class Contenido implements Serializable{
      * Calificacion del puesto segun las evaluaciones de los usuarios.
      * @return Devuelve el número de estrellas en promedio.
      */
-    public double getCalificacionGlobal() {
+    public int getCalificacionGlobal() {
         return calificacionGlobal;
     }
 
@@ -160,7 +156,7 @@ public class Contenido implements Serializable{
      * Se establece la calificacion global del puesto.
      * @param calificacionGlobal Calificacion promedio del puesto.
      */
-    public void setCalificacionGlobal(double calificacionGlobal) {
+    public void setCalificacionGlobal(int calificacionGlobal) {
         this.calificacionGlobal = calificacionGlobal;
     }
     
@@ -189,16 +185,25 @@ public class Contenido implements Serializable{
         EvaluacionC controlador = new EvaluacionC(emf);
         EvaluacionPK id = new EvaluacionPK(puesto.getNombrePuesto(), usuario.getNombreUsuario());
         Evaluacion actual = new Evaluacion(id, comentario, calificacion);
-        System.out.println("usuario: " + usuario.getNombreUsuario());
-        System.out.println("puesto: " + puesto.getNombrePuesto());
-        System.out.println("comentario: " + comentario);
-        System.out.println("calificación: " + calificacion);
+        Evaluacion encontrada = controlador.findEvaluacion(id);
         try{
-            controlador.edit(actual);
-        }catch(NonexistentEntityException nex){
-            System.out.println("No se pudo editar la evaluación.");
-            try{ controlador.create(actual);
-            }catch(Exception ex){System.out.println("No se pudo insertar la evaluación.");}
+            actual.setPuesto(puesto);
+            actual.setUsuario(usuario);
+            if (encontrada != null) {
+                actual.setIdEvaluacion(encontrada.getIdEvaluacion());
+                System.out.println("Se intenta editar la evaluación: " + actual.getIdEvaluacion());
+                controlador.edit(actual);
+            } else {
+                System.out.println("Se intenta crear la evaluación: " + actual.getIdEvaluacion());
+                controlador.create(actual);
+            } // Para actualizar las listas de comida y evaluaciones se actualiza el puesto.
+            puesto = new PuestoC(emf).findPuesto(puesto.getNombrePuesto());
+            //httpServletRequest.getSession().setAttribute("puesto", puesto);
+            init();
+        }catch(NonexistentEntityException neex){
+            System.out.println("No se pudo editar la evaluación." + neex.getMessage());
+        }catch(PreexistingEntityException peex){
+            System.out.println("No se pudo crear la evaluación." + peex.getMessage());
         }catch(Exception ex){
             System.out.println("Error desconocido: " + ex.getMessage());
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage
@@ -206,9 +211,6 @@ public class Contenido implements Serializable{
         }finally{
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage
             (FacesMessage.SEVERITY_INFO, "Comentario Guardado.", null));
-            System.out.println("calificaciónGlobal: " + calificacionGlobal);
-            actualiza();
-            System.out.println("calificaciónGlobal: " + calificacionGlobal);
         }
     }
     

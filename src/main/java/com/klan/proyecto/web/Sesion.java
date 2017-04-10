@@ -30,8 +30,8 @@ import java.io.Serializable;
 @RequestScoped // Sólo está disponible a partir de peticiones al bean
 public class Sesion implements Serializable{
 
-    private String nombreUsuario = "luis";
-    private String nombrePuesto = "harry";
+    private String nombreUsuario;
+    private String nombrePuesto;
     private final HttpServletRequest httpServletRequest; // Obtiene información de todas las peticiones de nombreUsuario.
     private final FacesContext faceContext; // Obtiene información de la aplicación
     private FacesMessage message;
