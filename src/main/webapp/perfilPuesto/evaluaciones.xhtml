@@ -2,9 +2,7 @@
             xmlns:h="http://java.sun.com/jsf/html"
             xmlns:p="http://primefaces.org/ui"
             xmlns:b="http://bootsfaces.net/ui">
-    <h:form>
-        <p:panel id="datos">
-            <p:dataTable value="#{contenido.evaluaciones}" var="e"
+            <p:dataTable value="#{contenido.puesto.evaluacionList}" var="e"
                          scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="200">
                 <p:column>
                     <b:icon name="user" style="padding: 6px"/>
@@ -13,14 +11,4 @@
                     <h:outputText value=" #{e.comentario}" style="font-size: small"/>
                 </p:column>
             </p:dataTable>
-        </p:panel>
-        <p:panel id="campo">
-            <p:rating id="calificacion" value="#{contenido.calificacion}" stars="5" cancel="false" onRate="#{contenido.setCalificacion(value)}"/>
-            <b:inputText id="comentario" placeholder="Escribe tu comentario ..." value="#{contenido.comentario}"/>
-        </p:panel>
-        <b:commandButton look="sucess" size="sm" value="Guardar" icon="ok"
-        update="datos" process="@all" actionListener="#{contenido.comentar()}"/>
-        <b:commandButton look="danger" size="sm" value="Cancelar" icon="remove"
-        update="campo" process="@this" action-listener="#{contenido.cancelar()}"/>
-    </h:form>
 </html>
