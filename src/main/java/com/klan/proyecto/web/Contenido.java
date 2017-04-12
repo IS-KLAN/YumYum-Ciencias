@@ -12,7 +12,6 @@ import com.klan.proyecto.controlador.UsuarioC;
 import com.klan.proyecto.controlador.PuestoC;
 import com.klan.proyecto.controlador.exceptions.NonexistentEntityException;
 import com.klan.proyecto.controlador.exceptions.PreexistingEntityException;
-import com.klan.proyecto.modelo.ComidaPuesto;
 import com.klan.proyecto.modelo.Evaluacion;
 import com.klan.proyecto.modelo.EvaluacionPK;
 import com.klan.proyecto.modelo.Puesto;
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -33,16 +32,14 @@ import java.io.Serializable;
  * @author patlani
  */
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class Contenido implements Serializable{
 
-    private Usuario usuario;
-    private Puesto puesto;
-    private String comentario = "";
-    private int calificacion = 0;
-    private int calificacionGlobal = 0;
-    private List<Evaluacion> evaluaciones;
-    private List<ComidaPuesto> comida;
+    private Usuario usuario; // Usario que va a comentar.
+    private Puesto puesto; // Puesto del que se muestra el contenido.
+    private String comentario = ""; // Texto del comentario a guardar.
+    private int calificacion = 0; // Calificación que dará el usuario.
+    private int calificacionGlobal = 0; // Calificación calculada del puesto.
     private final HttpServletRequest httpServletRequest; // Obtiene información de todas las peticiones de usuario.
     private final FacesContext faceContext; // Obtiene información de la aplicación
 
@@ -56,12 +53,13 @@ public class Contenido implements Serializable{
         httpServletRequest = (HttpServletRequest) faceContext.getExternalContext().getRequest();
         if (httpServletRequest.getSession().getAttribute("puesto") != null) {
             Puesto p = ((Puesto)httpServletRequest.getSession().getAttribute("puesto"));
+            System.out.println("Nombre de puesto cargado: " + p.getNombrePuesto());
             puesto = new PuestoC(emf).findPuesto(p.getNombrePuesto());
-        } else puesto = new Puesto("Harry");
+        } else puesto = new Puesto();
         if (httpServletRequest.getSession().getAttribute("usuario") != null) {
             Usuario u = ((Usuario)httpServletRequest.getSession().getAttribute("usuario"));
             usuario = new UsuarioC(emf).findUsuario(u.getNombreUsuario());
-        } else usuario = new Usuario("luis");
+        } else usuario = new Usuario();
     }
     
     @PostConstruct
@@ -71,8 +69,7 @@ public class Contenido implements Serializable{
         Evaluacion actual = new EvaluacionC(emf).findEvaluacion(id);
         calificacion = (actual != null)? actual.getCalificacion() : 0;
         comentario = (actual != null)? actual.getComentario() : "";
-        comida = puesto.getComidaPuestoList();
-        evaluaciones = puesto.getEvaluacionList();
+        List<Evaluacion> evaluaciones = puesto.getEvaluacionList();
         if (evaluaciones != null && evaluaciones.size() > 0) {
             calificacionGlobal = 0;
             for (Evaluacion e : evaluaciones) calificacionGlobal += e.getCalificacion();
@@ -159,23 +156,6 @@ public class Contenido implements Serializable{
     public void setCalificacionGlobal(int calificacionGlobal) {
         this.calificacionGlobal = calificacionGlobal;
     }
-    
-    
-    /**
-     * Método que se encarga de mostrar los comentarios disponibles a la interfaz.
-     * @return Devuelve una lista con los comentarios obtenidos del puesto.
-     */
-    public List<Evaluacion> getEvaluaciones() {
-        return evaluaciones;
-    }
-
-    /**
-     * Método que se encarga de mostrar los productos disponibles a la interfaz.
-     * @return Devuelve una lista con los producto obtenidos del puesto.
-     */
-    public List<ComidaPuesto> getComida() {
-        return comida;
-    }
 
     /**
      * Método que se encarga de capturar el comentario ingresado en la interfaz.
@@ -198,7 +178,6 @@ public class Contenido implements Serializable{
                 controlador.create(actual);
             } // Para actualizar las listas de comida y evaluaciones se actualiza el puesto.
             puesto = new PuestoC(emf).findPuesto(puesto.getNombrePuesto());
-            //httpServletRequest.getSession().setAttribute("puesto", puesto);
             init();
         }catch(NonexistentEntityException neex){
             System.out.println("No se pudo editar la evaluación." + neex.getMessage());
@@ -220,5 +199,41 @@ public class Contenido implements Serializable{
     public void cancelar() {
         calificacion = 0;
         comentario = "";
+    }
+
+    /**
+     * Metodo que decide la comida que se muestra según el contenido disponible para un puesto.
+     * @return Devuelve el nombre de la página correspondiente al contenido del puesto.
+     */
+    public String comidaDisponible() {
+        if (puesto.getComidaPuestoList().size() > 0) return "comida";
+        return "noHayContenidoDisponible";
+    }
+
+    /**
+     * Metodo que decide las evaluaciones que se muestran según el contenido disponible para un puesto.
+     * @return Devuelve el nombre de la página correspondiente al contenido del puesto.
+     */
+    public String evaluacionesDisponibles() {
+        if(puesto.getEvaluacionList().size() > 0) return "evaluaciones";
+        return "noHayContenidoDisponible";
+    }
+
+    /**
+     * Metodo que decide la comida que se muestra según el contenido disponible para un puesto.
+     * @return Devuelve el nombre de la página correspondiente al contenido del puesto.
+     */
+    public String comentarioDisponible() {
+        if(httpServletRequest.getSession().getAttribute("usuario") != null) return "comentarioDisponible";
+        return "comentarioNulo";
+    }
+    
+    /**
+     * Metodo que decide la comida que se muestra según el contenido disponible para un puesto.
+     * @return Devuelve el nombre de la página correspondiente al contenido del puesto.
+     */
+    public String contenidoDisponible() {
+        if(httpServletRequest.getSession().getAttribute("puesto") != null) return "perfilPuesto";
+        return "noHayContenidoDisponible";
     }
 }

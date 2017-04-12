@@ -95,4 +95,9 @@ public class Sesion implements Serializable{
         faceContext.addMessage(null, message);
         return "perfilPuesto";
     }
+
+    public String opcionesDisponibles() {
+        if (httpServletRequest.getSession().getAttribute("usuario") != null) return "opcionesUsuario";
+        return "opcionesInvitado";
+    }
 }
