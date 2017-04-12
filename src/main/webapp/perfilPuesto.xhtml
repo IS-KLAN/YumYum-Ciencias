@@ -16,32 +16,23 @@
     </h:head>
     <h:body style="padding-top:60px">
         <!-- Barra de navegación. -->
-        <b:container id="menu">
-                <b:navBar brand="YumYum Ciencias" inverse="true" brandHref="index.xhtml" fixed="top">
-                        <b:navbarLinks>
-                                <b:navLink value="Principal" iconAwesome="home" href="index.xhtml"></b:navLink>
-                                <b:navLink value="Ver Mapa" icon="cross" href="mapa.xhtml"></b:navLink>
-                                <b:navLink value="Ver Puesto" href="perfilPuesto.xhtml"></b:navLink>
-                                <b:navLink value="Salir (#{contenido.usuario.nombreUsuario})" href="ingresoUsuario.xhtml"></b:navLink>
-                        </b:navbarLinks>
-                </b:navBar>
-        </b:container>
+        <ui:include src="index/#{sesion.opcionesDisponibles()}.xhtml"/>
         <p><b:messages/></p>
         <b:container>
-            <h:outputLabel value="Puesto #{contenido.puesto.nombrePuesto}" style="font-size: large">
-                <h:form>
+            <h:form>
+                <h:outputLabel value="Puesto #{contenido.puesto.nombrePuesto}" style="font-size: x-large">
                     <p:rating value="#{contenido.calificacionGlobal}" readonly="true" />
-                </h:form>
-            </h:outputLabel>
+                </h:outputLabel>
+            </h:form>
             <b:tabView>
                 <b:tab title="Descripción">
                     <ui:include src="perfilPuesto/descripcion.xhtml" />
                 </b:tab>
                 <b:tab title="Comida">
-                    <ui:include src="perfilPuesto/comida.xhtml" />
+                    <ui:include src="perfilPuesto/#{contenido.comidaDisponible()}.xhtml" />
                 </b:tab>
                 <b:tab title="Comentarios">
-                    <ui:include src="perfilPuesto/evaluaciones.xhtml" />
+                    <ui:include src="perfilPuesto/#{contenido.comentarioDisponible()}.xhtml" />
                 </b:tab>
             </b:tabView>
         </b:container>

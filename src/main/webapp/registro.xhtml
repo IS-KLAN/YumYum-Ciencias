@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html  xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:ui="http://java.sun.com/jsf/facelets"
             xmlns:h="http://xmlns.jcp.org/jsf/html"
             xmlns:b="http://bootsfaces.net/ui"
             xmlns:p="http://primefaces.org/ui">
@@ -16,17 +17,7 @@
     </h:head>
     <h:body style="padding-top:75px">
         <!-- Barra de navegación. -->
-        <b:container id="menu">
-                <b:navBar brand="YumYum Ciencias" inverse="true" brandHref="#" fixed="top">
-                        <b:navbarLinks>
-                                <b:navLink value="Principal" iconAwesome="home" href="index.xhtml"></b:navLink>
-                                <b:navLink value="Ver Mapa" icon="cross" href="mapa.xhtml"></b:navLink>
-                                <b:navLink value="Ver Puesto" href="perfilPuesto.xhtml"></b:navLink>
-                                <b:navLink value="Iniciar Sesion" href="ingresoUsuario.xhtml"></b:navLink>
-                                <b:navLink value="Registrarse" href="registro.xhtml"></b:navLink>
-                        </b:navbarLinks>
-                </b:navBar>
-        </b:container>     
+        <ui:include src="index/opcionesInvitado.xhtml"/>
         <b:container>            
             <h1>Formulario de registro</h1> <br/>
 

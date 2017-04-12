@@ -15,19 +15,9 @@
     </h:head>
     <h:body style="padding-top:75px">
         <!-- Barra de navegación. -->
-        <b:container id="menu">
-                <b:navBar brand="YumYum Ciencias" inverse="true" brandHref="#" fixed="top">
-                        <b:navbarLinks>
-                                <b:navLink value="Principal" iconAwesome="home" href="index.xhtml"></b:navLink>
-                                <b:navLink value="Ver Mapa" href="mapa.xhtml"></b:navLink>
-                                <b:navLink value="Ver Puesto" icon="fa-cutlery" href="perfilPuesto.xhtml"></b:navLink>
-                                <b:navLink value="Iniciar Sesion" href="ingresoUsuario.xhtml"></b:navLink>
-                                <b:navLink value="Registrarse" href="registro.xhtml"></b:navLink>
-                        </b:navbarLinks>
-                </b:navBar>
-        </b:container>
+        <ui:include src="index/#{sesion.opcionesDisponibles()}.xhtml"/>
         <b:container>
-            <ui:include src="perfilPuesto/mapa.xhtml" />
+            <ui:include src="index/carrousel.xhtml" />
         </b:container>
         <footer> <p><br>© Company 2017</br></p> </footer>
   </h:body>
