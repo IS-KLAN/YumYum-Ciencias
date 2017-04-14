@@ -186,6 +186,11 @@ public class ComidaPuestoC implements Serializable {
         }
     }
 
+    /**
+     * Método que busca una relación entra una comida y un puesto, a partir de su llave primaria.
+     * @param id Es la llave primaria de la relación buscada.
+     * @return Devuelve la entidad encontrada en la BD, o NULL en caso de encontrarla.
+     */
     public ComidaPuesto findComidaPuesto(ComidaPuestoPK id) {
         EntityManager em = getEntityManager();
         try {
@@ -203,16 +208,6 @@ public class ComidaPuestoC implements Serializable {
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
-        } finally {
-            em.close();
-        }
-    }
-
-    public List<ComidaPuesto> findByNombrePuesto(String nombrePuesto) {
-        EntityManager em = getEntityManager();
-        try {
-            return em.createNamedQuery("ComidaPuesto.findByNombrePuesto")
-                    .setParameter("nombrePuesto", nombrePuesto).getResultList();
         } finally {
             em.close();
         }
