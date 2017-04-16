@@ -192,6 +192,16 @@ public class UsuarioC implements Serializable {
             em.close();
         }
     }
+    
+    public List<Usuario> encontrarPorCorreo(String correo) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.createNamedQuery("Usuario.findByCorreo")
+                    .setParameter("correo", correo).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 
     public int getUsuarioCount() {
         EntityManager em = getEntityManager();

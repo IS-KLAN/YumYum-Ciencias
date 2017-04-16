@@ -5,31 +5,25 @@
  */
 package com.klan.proyecto.web;
 
-import com.klan.proyecto.controlador.UsuarioC;
-import com.klan.proyecto.modelo.Usuario;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  *
  * Bean manejado qué se utiliza para el manejo de inicio de Sesión en
- * la aplicación web.
- *
+ * la aplicación web. *
  * @author anahiqj
  */
 @ManagedBean // LEER LA DOCUMENTACIÖN DE ESTA ANOTACIÓN: Permite dar de alta al bean en la aplicación
 @RequestScoped // Sólo está disponible a partir de peticiones al bean
-public class Sesion implements Serializable{
+public class IngresoAdministrador implements Serializable{
 
-    private String nombreUsuario;
+    private String administrador;
     private String contrasena;
     private final HttpServletRequest httpServletRequest; // Obtiene información de todas las peticiones de nombreUsuario.
     private final FacesContext faceContext; // Obtiene información de la aplicación
@@ -39,27 +33,28 @@ public class Sesion implements Serializable{
      * Constructor para inicializar los valores de faceContext y
      * httpServletRequest.
      */
-    public Sesion() {
+    public IngresoAdministrador() {
         faceContext = FacesContext.getCurrentInstance();
         httpServletRequest = (HttpServletRequest) faceContext.getExternalContext().getRequest();
     }
 
     /**
+    /**
      * Obtiene el nombre de nombreUsuario.
      *
      * @return El nombre de nombreUsuario.
      */
-    public String getNombreUsuario() {
-        return nombreUsuario;
+    public String getAdministrador() {
+        return administrador;
     }
 
     /**
      * Establece el nombre de nombreUsuario.
      *
-     * @param nombreUsuario El nombre de nombreUsuario a establecer.
+     * @param administrador El nombre de nombreUsuario a establecer.
      */
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
+    public void setAdministrador(String administrador) {
+        this.administrador = administrador;
     }
 
 
@@ -80,35 +75,21 @@ public class Sesion implements Serializable{
      * Método encargado de capturar los datos ingresados.
      * @return El nombre de la vista que va a responder.
      */
+
     public String ingresar() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("YumYum-Ciencias");
-        List<Usuario> lista = new UsuarioC(emf).encontrarPorCorreo(nombreUsuario);
-             
-        if(lista.isEmpty()){
-            message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario o contraseña incorrecto", null);
+        if (administrador.equalsIgnoreCase("admin") && contrasena.equalsIgnoreCase("passwordAdmin")) {
+            httpServletRequest.getSession().setAttribute("administrador", administrador);
+            message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso Correcto", null);
             faceContext.addMessage(null, message);
-            return "ingresoUsuario";
-     
-        }else{
-            
-            Usuario u = lista.remove(0);
-            httpServletRequest.getSession().setAttribute("usuario", u);
-            httpServletRequest.getSession().setAttribute("contrasena", u);
-            if(contrasena.equals(u.getContraseña())){
-                message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Acceso Correcto", null);
-                faceContext.addMessage(null, message);
-                return "index";
-            }else{
-                message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Usuario o contraseña incorrecto", null);
-                faceContext.addMessage(null, message);
-                return "ingresoUsuario";
-            }
+            return "index/opcionesAdministrador";
         }
+        message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre de administrador o contraseña incorrecto", null);
+        faceContext.addMessage(null, message);
+        return "ingresoAdministradorIH";
     }
 
-  
     public String opcionesDisponibles() {
-        if (httpServletRequest.getSession().getAttribute("usuario") != null) return "opcionesUsuario";
+        if (httpServletRequest.getSession().getAttribute("administrador") != null) return "opcionesAdministrador";
         return "opcionesInvitado";
     }
 }

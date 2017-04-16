@@ -6,7 +6,7 @@
             xmlns:f="http://java.sun.com/jsf/core"
             xmlns:b="http://bootsfaces.net/ui">
     <h:head>
-        <title>YumYum Ciencias - Iniciar Sesión</title>
+        <title>YumYum Ciencias - Iniciar Sesión Administrador</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="author" content="KLAN"></meta>
         <style>
@@ -21,18 +21,17 @@
             <h:form styleClass="form-signin" prependId="false">
                 <h3 class="form-signin-heading" align="center">Ingresar datos:</h3>
                 <b:messages/>
-                <b:inputText id="usuario" placeholder="Nombre de usuario" value="#{sesion.nombreUsuario}">
+                <b:inputText id="administrador" placeholder="Administrador" value="#{ingresoAdministrador.administrador}">
                     <f:facet name="prepend">
                         <b:icon name="user" />
                     </f:facet>
                 </b:inputText>
-                <b:inputText id="contrasena" placeholder="Contraseña" type="password" value="#{sesion.contrasena}">
+                <b:inputText id="contrasena" placeholder="Contraseña" type="password" value="#{ingresoAdministrador.contrasena}">
                     <f:facet name="prepend">
                         <b:iconAwesome name="key"/>
                     </f:facet>
                 </b:inputText>
-                <b:selectBooleanCheckbox value="true" caption="Recordar"/>
-                <b:commandButton look="primary btn-block" value="Capturar datos" icon="log-in" size="lg" action="#{sesion.ingresar()}"/>
+                <b:commandButton look="primary btn-block" value="Capturar datos" icon="log-in" size="lg" action="#{ingresoAdministrador.ingresar()}"/>
             </h:form>
         </b:container>
         <footer> <p><br>© Company 2017</br></p> </footer>
