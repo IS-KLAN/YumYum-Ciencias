@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Agregar Puesto</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="KLAN"/>
+        <meta charset="utf-8"/>
+    </h:head>
+    <h:body style="padding-top:50px">
+        <!-- Barra de navegación. -->
+        <b:container rendered="#{ingresoAdministrador.accedido()}">
+            <h:form><ui:include src="index/opciones.xhtml"/></h:form>
+            <p:growl id="messages" showDetail="true" autoUpdate="true"/>
+            <h1>Agregar Puesto<br/></h1>
+            <b:panelGrid columns="2">
+                <b:panelGrid columns="1">
+                    <h:outputLabel value="Marque la ubicación:" style="font-size: medium"/>
+                    <ui:include src="agregaPuesto/mapa.xhtml"/>
+                </b:panelGrid>
+                <h:form id="agregaPuesto" enctype="multipart/form-data"><br/>
+                    <ui:include src="agregaPuesto/datos.xhtml"/>
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Continuar" ajax="false" process="@all" action="#{agregaPuesto.agregar()}"/>
+                        <p:commandButton value="Limpiar" update="agregaPuesto" process="@all" action="agregaPuesto.xhtml?faces-redirect=true"/>
+                    </h:panelGrid>
+                </h:form>
+            </b:panelGrid>
+            <footer> <br/><p>© KLAN 2017</p> </footer>
+        </b:container>
+    </h:body>
+</html>
