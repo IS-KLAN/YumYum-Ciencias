@@ -1,6 +1,0 @@
-"Falta el archivo package-info.java."
-"El parámetro -parámetro- debería ser final."
-"&apos; -varibale- &apos; oculta un campo."
-"El método &apos; -método- &apos; no está diseñado para ser extendido - necesita ser abstracto, final o vacío."
-"La variable &apos; -variable- &apos; debe ser privada y tener métodos de acceso."
-"Evitar los condicionales en línea.""
