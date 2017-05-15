@@ -98,7 +98,7 @@ public class Pendiente implements Serializable {
     }
 
     /**
-     * Constructor con todos sus atributos inicializados.
+     * Constructor con todos sus atributos inicializados
      *
      * @param nombre Nombre y llave del usuario pendiente.
      * @param correo Correo del usuario pendiente.
@@ -197,7 +197,7 @@ public class Pendiente implements Serializable {
 
     /**
      * Método de acceso a los datos de la imagen definida por el
-     * usuario pendiente.
+     * usuario pendiente
      *
      * @return byte[] Devuelve el conjunto de datos de la imagen
      * definida.
@@ -208,7 +208,7 @@ public class Pendiente implements Serializable {
 
     /**
      * Método que establece los datos de la imagen definida por
-     * el usuario pendiente.
+     * el usuario pendiente
      *
      * @param datos Datos que se establecen a la imagen del
      * usuario pendiente

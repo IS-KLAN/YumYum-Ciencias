@@ -82,7 +82,7 @@ public class Puesto implements Serializable {
     /**
      * Lista de comidas.
      */
-    @ManyToMany(mappedBy = "puestoList")
+    @ManyToMany(mappedBy = "puestos")
     private List<Comida> comidas;
     /**
      * Lista de evaluaciones.
@@ -128,8 +128,8 @@ public class Puesto implements Serializable {
      * @param rutaImagen Ruta del archivo de imagen del puesto.
      * @param datos Datos de la imagen definida para el puesto.
      */
-    public Puesto(String nombre, String descripcion, String latitud,
-            String longitud, String rutaImagen, byte[] datos) {
+    public Puesto(String nombre, String descripcion, String latitud, String longitud,
+                                 String rutaImagen, byte[] datos) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.latitud = latitud;
