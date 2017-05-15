@@ -21,73 +21,90 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
+ * Controlador JPA para insertar, editar, borrar y realizar
+ * consultas de la tabla Evaluación.
  *
  * @author patlani
  */
 public class EvaluacionC implements Serializable {
 
     /**
-     * 
-     * @param emf 
+     * Constructor a partir de una entidad de conexión a una
+     * base de datos.
+     *
+     * @param emf Es la entidad que con la que se conecta a
+     * la base de datos.
      */
     public EvaluacionC(EntityManagerFactory emf) {
         this.emf = emf;
     }
-    
+
     /**
-     * 
+     * Entidad que se encarga de conectar la base de datos
+     * para hacer las transacciones.
      */
     private EntityManagerFactory emf = null;
 
     /**
-     * 
-     * @return 
+     * Método de acceso a la entidad que conecta la BD.
+     *
+     * @return EntityManager Devuelve la entidad que conecta
+     * la BD.
      */
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
     /**
-     * 
-     * @param evaluacion
-     * @throws EntidadExistenteException
-     * @throws Exception 
+     * Método que inserta en la BD una evaluación con sus
+     * atributos definidos. Verificando que la llave este
+     * bien definida y sus listas de relaciones queden
+     * actualizadas.
+     *
+     * @param evaluacion Es la evaluacipon a insertar.
+     * @throws EntidadExistenteException Indica que ya
+     * exisistía una evaluación con la misma PK.
+     * @throws Exception Cualquier otro error durante la
+     * transacción.
      */
     public void crear(Evaluacion evaluacion)
-                  throws EntidadExistenteException, Exception {
+            throws EntidadExistenteException, Exception {
         if (evaluacion.getLlave() == null) {
-            evaluacion.setLlave(new EvaluacionP());
-        }
-        evaluacion.getLlave().setNombreUsuario(evaluacion.getUsuario().getNombre());
-        evaluacion.getLlave().setNombrePuesto(evaluacion.getPuesto().getNombre());
+            throw new NullPointerException(
+            "Se debe definir una llave no nula para insertar la evaluación.");
+        } // Se guarda la llave primaria como id para usarla más adelante.
+        EvaluacionP id = evaluacion.getLlave();
         EntityManager em = null;
-        try {
+        try { // Se comienza la transacción de inserción en la BD.
             em = getEntityManager();
             em.getTransaction().begin();
-            Puesto puesto = evaluacion.getPuesto();
-            if (puesto != null) {
-                puesto = em.getReference(puesto.getClass(), puesto.getNombre());
-                evaluacion.setPuesto(puesto);
-            }
-            Usuario usuario = evaluacion.getUsuario();
-            if (usuario != null) {
-                usuario = em.getReference(usuario.getClass(), usuario.getNombre());
-                evaluacion.setUsuario(usuario);
-            }
-            em.persist(evaluacion);
-            if (puesto != null) {
-                puesto.getEvaluaciones().add(evaluacion);
-                puesto = em.merge(puesto);
-            }
-            if (usuario != null) {
-                usuario.getEvaluaciones().add(evaluacion);
-                usuario = em.merge(usuario);
-            }
-            em.getTransaction().commit();
+            // Se busca la referencia al puesto y usuario.
+            Puesto puesto = em.getReference(
+            Puesto.class, id.getNombrePuesto());
+            Usuario usuario = em.getReference(
+            Usuario.class, id.getNombreUsuario());
+            // Se asegura que la llave primaria sea congruente.
+            evaluacion.setPuesto(puesto);
+            evaluacion.setUsuario(usuario);
+            // Se verifica que las referencias no sean nulas.
+            if (evaluacion.getPuesto() == null
+            || evaluacion.getUsuario() == null) {
+                // Se cierra la conexión antes de cancelar la inserción.
+                em.close();
+                throw new NullPointerException(
+                "La llave de la evaluación contiene referencias nulas.");
+            } // Se agrega la evaluación a la lista del puesto.
+            puesto.getEvaluaciones().add(evaluacion);
+            em.merge(puesto);
+            // Se agrega la evaluación a la lista del usuario.
+            usuario.getEvaluaciones().add(evaluacion);
+            em.merge(usuario);
+            em.persist(evaluacion); // Se inserta la evaluación en la BD.
+            em.getTransaction().commit(); // Se confirma la transacción.
         } catch (Exception ex) {
-            if (buscaEvaluacion(evaluacion.getLlave()) != null) {
+            if (buscaEvaluacion(id) != null) {
                 throw new EntidadExistenteException(
-                                        "Evaluacion " + evaluacion + " ya existe.", ex);
+                "La evaluación " + evaluacion + " ya existe en la BD.", ex);
             }
             throw ex;
         } finally {
@@ -98,60 +115,61 @@ public class EvaluacionC implements Serializable {
     }
 
     /**
-     * 
-     * @param evaluacion
-     * @throws EntidadInexistenteException
-     * @throws Exception 
+     * Método que actualiza en la BD una evaluación con sus
+     * atributos definidos. Verificando que la PK este bien
+     * definida y sus listas de relaciones queden
+     * actualizadas.
+     *
+     * @param evaluacion Es la evaluacipon que se actualiza.
+     * @throws EntidadInexistenteException Indica que la
+     * evaluación no existe en la BD.
+     * @throws Exception Cualquier error que ocurra durante
+     * la transacción.
      */
     public void editar(Evaluacion evaluacion)
-                  throws EntidadInexistenteException, Exception {
-        evaluacion.getLlave().setNombreUsuario(evaluacion.getUsuario().getNombre());
-        evaluacion.getLlave().setNombrePuesto(evaluacion.getPuesto().getNombre());
+            throws EntidadInexistenteException, Exception {
+        // Se verifica que la evaluación tenga definida una llave.
+        if (evaluacion.getLlave() == null) {
+            throw new NullPointerException(
+            "Se debe definir una llave no nula para insertar la evaluación.");
+        } // Se guarda la llave primaria como id para usarla más adelante.
+        EvaluacionP id = evaluacion.getLlave();
         EntityManager em = null;
-        try {
+        try { // Se verifica que la evaluación exista en la BD.
+            Evaluacion original = buscaEvaluacion(id);
+            if (original == null) {
+                throw new EntidadInexistenteException(
+                "La evaluación con id " + id + "no existe.");
+            }
+            // Se comienza la transacción de actualización en la BD.
             em = getEntityManager();
             em.getTransaction().begin();
-            Evaluacion persistentEvaluacion = em.find(Evaluacion.class, 
-                                                                                                evaluacion.getLlave());
-            Puesto original = persistentEvaluacion.getPuesto();
-            Puesto nuevo = evaluacion.getPuesto();
-            Usuario usuarioOriginal = persistentEvaluacion.getUsuario();
-            Usuario usuarioNuevo = evaluacion.getUsuario();
-            if (nuevo != null) {
-                nuevo = em.getReference(nuevo.getClass(), nuevo.getNombre());
-                evaluacion.setPuesto(nuevo);
-            }
-            if (usuarioNuevo != null) {
-                usuarioNuevo = em.getReference(usuarioNuevo.getClass(), 
-                                                                                    usuarioNuevo.getNombre());
-                evaluacion.setUsuario(usuarioNuevo);
-            }
-            evaluacion = em.merge(evaluacion);
-            if (original != null && !original.equals(nuevo)) {
-                original.getEvaluaciones().remove(evaluacion);
-                original = em.merge(original);
-            }
-            if (nuevo != null && !nuevo.equals(original)) {
-                nuevo.getEvaluaciones().add(evaluacion);
-                nuevo = em.merge(nuevo);
-            }
-            if (usuarioOriginal != null && !usuarioOriginal.equals(usuarioNuevo)) {
-                usuarioOriginal.getEvaluaciones().remove(evaluacion);
-                usuarioOriginal = em.merge(usuarioOriginal);
-            }
-            if (usuarioNuevo != null && !usuarioNuevo.equals(usuarioOriginal)) {
-                usuarioNuevo.getEvaluaciones().add(evaluacion);
-                usuarioNuevo = em.merge(usuarioNuevo);
-            }
-            em.getTransaction().commit();
+            // Se busca la referencia al puesto y usuario .
+            Puesto puesto = em.getReference(
+            Puesto.class, id.getNombrePuesto());
+            Usuario usuario = em.getReference(
+            Usuario.class, id.getNombreUsuario());
+            // Se asegura que la llave primaria sea congruente.
+            evaluacion.setPuesto(puesto);
+            evaluacion.setUsuario(usuario);
+            // Se verifica que las referencias no sean nulas.
+            if (evaluacion.getPuesto() == null
+            || evaluacion.getUsuario() == null) {
+                // Se cierra la conexión antes de cancelar la inserción.
+                em.close();
+                throw new NullPointerException(
+                "La llave de la evaluación contiene referencias nulas.");
+            } // Se actualiza la evaluación de la lista del puesto.
+            puesto.getEvaluaciones().remove(original);
+            puesto.getEvaluaciones().add(evaluacion);
+            em.merge(puesto); // Se actualiza el puesto en la BD.
+            // Se actualiza la evaluación de la lista del usuario.
+            usuario.getEvaluaciones().remove(original);
+            usuario.getEvaluaciones().add(evaluacion);
+            em.merge(usuario); // Se actualiza el usuario en la BD.
+            em.merge(evaluacion); // Se actualiza la evaluación en la BD.
+            em.getTransaction().commit(); // Se confirma la transacción.
         } catch (Exception ex) {
-            String msg = ex.getLocalizedMessage();
-            if (msg == null || msg.length() == 0) {
-                EvaluacionP id = evaluacion.getLlave();
-                if (buscaEvaluacion(id) == null) {
-                    throw new EntidadInexistenteException("No existe evaluacion con id " + id);
-                }
-            }
             throw ex;
         } finally {
             if (em != null) {
@@ -161,34 +179,41 @@ public class EvaluacionC implements Serializable {
     }
 
     /**
-     * 
-     * @param id
-     * @throws EntidadInexistenteException 
+     * Método que elimina de la BD una evaluación con sus
+     * atributos definidos. Verificando que la PK este bien
+     * definida y sus listas de relaciones queden
+     * actualizadas.
+     *
+     * @param id Es la llave primaria de la evaluación.
+     * @throws EntidadInexistenteException Indica que la
+     * evaluación no se elimina porque existe en la BD.
      */
-    public void borrar(EvaluacionP id) throws EntidadInexistenteException {
+    public void borrar(EvaluacionP id) 
+    throws EntidadInexistenteException {
         EntityManager em = null;
-        try {
+        try { // Se comienza la transacción en la BD.
             em = getEntityManager();
             em.getTransaction().begin();
             Evaluacion evaluacion;
-            try {
+            try { // Se busca la evaluación con la PK definida en la BD.
                 evaluacion = em.getReference(Evaluacion.class, id);
                 evaluacion.getLlave();
             } catch (EntityNotFoundException enfe) {
                 throw new EntidadInexistenteException(
-                                        "No existe evaluacion con id " + id, enfe);
-            }
+                "La evaluación con id " + id + " no existe en la BD.", enfe);
+            } // Se remueve la relación del puesto con la evaluación.
             Puesto puesto = evaluacion.getPuesto();
             if (puesto != null) {
                 puesto.getEvaluaciones().remove(evaluacion);
-                puesto = em.merge(puesto);
-            }
+                em.merge(puesto);
+            } // Se remueve la relación del usuario con la evaluación.
             Usuario usuario = evaluacion.getUsuario();
             if (usuario != null) {
                 usuario.getEvaluaciones().remove(evaluacion);
-                usuario = em.merge(usuario);
-            }
+                em.merge(usuario);
+            } // Se remueve la evaluación de la BD.
             em.remove(evaluacion);
+            // Se confirma la transacción.
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -198,32 +223,46 @@ public class EvaluacionC implements Serializable {
     }
 
     /**
-     * 
-     * @return 
+     * Método que obtiene la lista de entidades en la tabla
+     * Evaluación de la BD.
+     *
+     * @return Devuelve una lista con las evaluaciónes
+     * insertadas en la BD.
      */
     public List<Evaluacion> buscaEvaluacions() {
         return buscaEvaluacions(true, -1, -1);
     }
 
     /**
-     * 
-     * @param maxResults
-     * @param firstResult
-     * @return 
+     * Método que obtiene la lista de entidades en la tabla
+     * Evaluación de la BD.
+     *
+     * @param maxResults Indice hasta el que se obtienen
+     * entidades.
+     * @param firstResult Indice desde el que se obtienen
+     * entidades.
+     * @return Devuelve una lista con las evaluaciónes
+     * insertadas en la BD.
      */
-    public List<Evaluacion> buscaEvaluacions(int maxResults, int firstResult) {
+    public List<Evaluacion> buscaEvaluacions(
+    int maxResults, int firstResult) {
         return buscaEvaluacions(false, maxResults, firstResult);
     }
 
     /**
-     * 
-     * @param all
-     * @param maxResults
-     * @param firstResult
-     * @return 
+     * Método que obtiene la lista de entidades en la tabla
+     * Evaluación de la BD.
+     *
+     * @param all Indica si se obtienen todas las entidades.
+     * @param maxResults Indice hasta el que se obtienen
+     * entidades.
+     * @param firstResult Indice desde el que se obtienen
+     * entidades.
+     * @return Devuelve una lista con las evaluaciónes
+     * insertadas en la BD.
      */
     private List<Evaluacion> buscaEvaluacions(boolean all,
-                                                                                            int maxResults, int firstResult) {
+            int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -240,9 +279,14 @@ public class EvaluacionC implements Serializable {
     }
 
     /**
-     * 
-     * @param llave
-     * @return 
+     * Método que realiza la búsqueda de una evaluación por
+     * su llave primaria.
+     *
+     * @param llave Es la llave primaria de la evaluación
+     * que se busca, definida con un nombre de puesto y un
+     * nombre de usuario.
+     * @return Devuelve la entidad encontrada, o NULL si no
+     * se encuentra.
      */
     public Evaluacion buscaEvaluacion(EvaluacionP llave) {
         EntityManager em = getEntityManager();
@@ -254,8 +298,11 @@ public class EvaluacionC implements Serializable {
     }
 
     /**
-     * 
-     * @return 
+     * Devuelve la cantidad de entidades en la tabla
+     * Evaluación de la BD.
+     *
+     * @return Devuelve un entero con la cantidad de
+     * entidades en la tabla Evaluación de la BD.
      */
     public int cantidadDeEvaluacions() {
         EntityManager em = getEntityManager();
@@ -269,5 +316,5 @@ public class EvaluacionC implements Serializable {
             em.close();
         }
     }
-    
+
 }
