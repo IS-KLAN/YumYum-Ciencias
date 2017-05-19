@@ -24,78 +24,68 @@ import javax.persistence.criteria.Root;
 public class AdministradorC implements Serializable {
 
     /**
-     * Constructor de la clase JPA de Administrador.
-     * @param emf - objeto EntityManagerFactory para la conexión a la BD.
+     * 
+     * @param emf 
      */
     public AdministradorC(EntityManagerFactory emf) {
         this.emf = emf;
     }
-
+    
     /**
-     * Objeto de EntityManagerFactory encargado de la conexión a la BD.
+     * 
      */
     private EntityManagerFactory emf = null;
 
     /**
-     * Método encargado de comenzar la conexión con la BD.
-     * @return - Creación de un objeto para la conexión a la BD.
+     * 
+     * @return
      */
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
     /**
-     * Método encargado de la creación de un administror al sistema.
-     * @param administrador - objeto administrador que se creará.
-     * @throws EntidadExistenteException - excepción lanzada cuando existen
-     * dos administradores con nombres duplicados.
-     * @throws Exception - error ocurrido durante la creación de administrador.
+     * 
+     * @param administrador
+     * @throws EntidadExistenteException
+     * @throws Exception 
      */
     public void crear(Administrador administrador)
-                throws EntidadExistenteException, Exception {
+                  throws EntidadExistenteException, Exception {
         EntityManager em = null;
         try {
-            // Comenzamos la transacción de inserción en la BD.
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(administrador);
             em.getTransaction().commit();
         } catch (Exception ex) {
-            // Si existen dos administradores con nombres iguales, envíamos un
-            // error, puesto que los valores son duplicados.
             if (buscaNombre(administrador.getNombre()) != null) {
-                throw new EntidadExistenteException("Administrador "
+                throw new EntidadExistenteException( "Administrador "
                 + administrador + " ya existe.", ex);
             }
-            // Monstramos cualquier otro error ocurrido durante la transacción.
             throw ex;
         } finally {
             if (em != null) {
-                // Cerramos la conexión a la BD.
                 em.close();
             }
         }
     }
 
     /**
-     * Método que se encarga de editar los datos de un administror.
-     * @param administrador - objeto administrador que se va a editar.
-     * @throws EntidadInexistenteException - en caso de no existir tal
-     * administrador a editar, se lanza un error.
-     * @throws Exception- error ocurrido durante la creación de administrador.
+     * 
+     * @param administrador
+     * @throws EntidadInexistenteException
+     * @throws Exception 
      */
     public void editar(Administrador administrador)
-                throws EntidadInexistenteException, Exception {
+                  throws EntidadInexistenteException, Exception {
         EntityManager em = null;
         try {
-            //Comenzamos la transacción de la modificación del
-            // administrador en la BD.
             em = getEntityManager();
             em.getTransaction().begin();
             administrador = em.merge(administrador);
             em.getTransaction().commit();
         } catch (Exception ex) {
-            //En caso de que no exista el administrador, se lanza un error.
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
                 String id = administrador.getNombre();
@@ -104,26 +94,22 @@ public class AdministradorC implements Serializable {
                             "No existe administrador con id " + id);
                 }
             }
-            // Monstramos cualquier otro error ocurrido durante la transacción.
             throw ex;
         } finally {
             if (em != null) {
-                // Cerramos la conexión a la BD.
                 em.close();
             }
         }
     }
 
     /**
-     * Método que se encarga de eliminar un administror.
-     * @param nombre - nombre del administrador a borrar.
-     * @throws EntidadInexistenteException - en caso de no existir tal
-     * administrador a eliminar, se lanza un error.
+     * 
+     * @param nombre
+     * @throws EntidadInexistenteException 
      */
     public void borrar(String nombre) throws EntidadInexistenteException {
         EntityManager em = null;
         try {
-            // Comenzamos la transacción en la BD.
             em = getEntityManager();
             em.getTransaction().begin();
             Administrador administrador;
@@ -131,61 +117,48 @@ public class AdministradorC implements Serializable {
                 administrador = em.getReference(Administrador.class, nombre);
                 administrador.getNombre();
             } catch (EntityNotFoundException enfe) {
-                //En caso de que no exista el administrador, se lanza un error.
                 throw new EntidadInexistenteException(
                         "No existe administrador con id " + nombre, enfe);
             }
-            // Si existe el administrador, realizamos la acción correspondiete
-            // y terminamos la transacción en la base de datos.
             em.remove(administrador);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
-                // Cerramos la conexión a la BD.
                 em.close();
             }
         }
     }
 
     /**
-     * Método encargado de obtener un listado de todos los administradores que
-     * se encuentran almacenados en la base de datos.
-     * @return - Lista de administradores registrados en la base de datos.
+     * 
+     * @return 
      */
     public List<Administrador> buscaAdministradores() {
         return buscaAdministradores(true, -1, -1);
     }
 
-    /**
-     * Método encargado de obtener un listado de todos los administradores que
-     * se encuentran almacenados en la base de datos.
-     * @param maxResultado - Índice hasta el que se obtienen las entidades.
-     * @param primerResultado - Índice desde el que se obtienen las entidades.
-     * @return Devuelve la lista con los administradores registrados en la BD.
-     */
-    public List<Administrador> buscaAdministradores(int maxResultado,
-            int primerResultado) {
-        return buscaAdministradores(false, maxResultado, primerResultado);
+    public List<Administrador> buscaAdministradores(int maxResults,
+            int firstResult) {
+        return buscaAdministradores(false, maxResults, firstResult);
     }
 
     /**
-     * Método encargado de obtener un listado de todos los administradores que
-     * se encuentran almacenados en la base de datos.
-     * @param todos - Indica si se obtienen todas las entidades.
-     * @param maxResultado - Índice hasta el que se obtienen las entidades.
-     * @param primerResultado - Índice desde el que se obtienen las entidades.
-     * @return Devuelve la lista con los administradores registrados en la BD.
+     * 
+     * @param all
+     * @param maxResults
+     * @param firstResult
+     * @return 
      */
-    private List<Administrador> buscaAdministradores(boolean todos,
-        int maxResultado, int primerResultado) {
+    private List<Administrador> buscaAdministradores(boolean all,
+        int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             cq.select(cq.from(Administrador.class));
             Query q = em.createQuery(cq);
-            if (!todos) {
-                q.setMaxResults(maxResultado);
-                q.setFirstResult(primerResultado);
+            if (!all) {
+                q.setMaxResults(maxResults);
+                q.setFirstResult(firstResult);
             }
             return q.getResultList();
         } finally {
@@ -194,10 +167,9 @@ public class AdministradorC implements Serializable {
     }
 
     /**
-     * Método que obtiene un administrador almacenado en la base de datos,
-     * el cual es buscado a través de su nombre.
-     * @param nombre - nombre del administrador a buscar.
-     * @return Regresa el objeto administrador encontrado.
+     * 
+     * @param nombre
+     * @return 
      */
     public Administrador buscaNombre(String nombre) {
         EntityManager em = getEntityManager();
@@ -209,9 +181,8 @@ public class AdministradorC implements Serializable {
     }
 
     /**
-     * Método encargado de obtener el número de administradores
-     * almacenados en la base de datos.
-     * @return - el número de administradores registrados.
+     * 
+     * @return 
      */
     public int cantidadDeAdministradores() {
         EntityManager em = getEntityManager();
@@ -225,5 +196,5 @@ public class AdministradorC implements Serializable {
             em.close();
         }
     }
- 
+    
 }

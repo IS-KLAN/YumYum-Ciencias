@@ -22,44 +22,39 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *Clase JPA para Crear, Modificar, y eliminar un puesto de la BD.
  *
  * @author patlani
  */
 public class PuestoC implements Serializable {
 
     /**
-     * Constructor de la clase JPA para un Puesto.
-     * @param em  Objeto de EntityManagerFactory encargado de la conexión
-     * a la BD.
+     * 
+     * @param emf 
      */
-    public PuestoC(EntityManagerFactory em) {
-    	this.emf = em;
+    public PuestoC(EntityManagerFactory emf) {
+        this.emf = emf;
     }
-
+    
     /**
-     * Objeto de EntityManagerFactory encargado de la conexión a la BD.
+     * 
      */
     private EntityManagerFactory emf = null;
 
     /**
-     * Método encargado de comenzar la conexión con la BD.
-     * @return Objeto creado ara la conexión a la BD.
+     * 
+     * @return 
      */
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
     /**
-     * Metodo encargado de la creacion de un puesto en la BD.
-     * @param puesto	El puesto que se guardara en la BD
-     * @throws EntidadExistenteException excepcion lanzada  cuando
-     * ya existe un puesto guardado en la BD con el mismo nombre
-     * @throws Exception Excepcion lanzanda si se presenta un
-     * error al guardar el puesto en la base de datos.
+     * 
+     * @param puesto
+     * @throws EntidadExistenteException
+     * @throws Exception 
      */
-    public void crear(Puesto puesto) 
-    					throws EntidadExistenteException, Exception {
+    public void crear(Puesto puesto) throws EntidadExistenteException, Exception {
         if (puesto.getComidas() == null) {
             puesto.setComidas(new ArrayList<Comida>());
         }
@@ -71,38 +66,35 @@ public class PuestoC implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             List<Comida> comidas = new ArrayList<Comida>();
-            for (Comida comida : puesto.getComidas()) {
-                comida = em.getReference(comida.getClass(),
-										comida.getNombre());
-                comidas.add(comida);
+            for (Comida c : puesto.getComidas()) {
+                c = em.getReference(c.getClass(), c.getNombre());
+                comidas.add(c);
             }
             puesto.setComidas(comidas);
             List<Evaluacion> evaluaciones = new ArrayList<Evaluacion>();
-            for (Evaluacion evaluacion : puesto.getEvaluaciones()) {
-                evaluacion = em.getReference(evaluacion.getClass(),
-                							 evaluacion.getLlave());
-                evaluaciones.add(evaluacion);
+            for (Evaluacion e : puesto.getEvaluaciones()) {
+                e = em.getReference(e.getClass(), e.getLlave());
+                evaluaciones.add(e);
             }
             puesto.setEvaluaciones(evaluaciones);
             em.persist(puesto);
-            for (Comida comidasComida : puesto.getComidas()) {
-                comidasComida.getPuestos().add(puesto);
-                comidasComida = em.merge(comidasComida);
+            for (Comida c : puesto.getComidas()) {
+                c.getPuestos().add(puesto);
+                c = em.merge(c);
             }
-            for (Evaluacion evaluacion : puesto.getEvaluaciones()) {
-                Puesto original = evaluacion.getPuesto();
-                evaluacion.setPuesto(puesto);
-                evaluacion = em.merge(evaluacion);
+            for (Evaluacion e : puesto.getEvaluaciones()) {
+                Puesto original = e.getPuesto();
+                e.setPuesto(puesto);
+                e = em.merge(e);
                 if (original != null) {
-                    original.getEvaluaciones().remove(evaluacion);
+                    original.getEvaluaciones().remove(e);
                     original = em.merge(original);
                 }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (buscaNombre(puesto.getNombre()) != null) {
-                throw new EntidadExistenteException("Puesto " + puesto
-                	+ " ya existe.", ex);
+                throw new EntidadExistenteException("Puesto " + puesto + " ya existe.", ex);
             }
             throw ex;
         } finally {
@@ -113,18 +105,14 @@ public class PuestoC implements Serializable {
     }
 
     /**
-     * Metodo que se encarga de editar un puesto guardado en la BD.
-     * @param puesto	El puesto a editar en la BD.
-     * @throws InconsistenciasException	Excepcion lanzada al encontrar
-     * datos que no corresponden con los anteriores.
-     * @throws EntidadInexistenteException Excepcion lanzada al querer
-     * editar un puesto que no existe en la BD
-     * @throws Exception Excepcion lanzada al presentarse un error en la
-     * edicion de un puesto de la BD.
+     * 
+     * @param puesto
+     * @throws InconsistenciasException
+     * @throws EntidadInexistenteException
+     * @throws Exception 
      */
     public void editar(Puesto puesto)
-                  throws InconsistenciasException, EntidadInexistenteException,
-                  													Exception {
+                  throws InconsistenciasException, EntidadInexistenteException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -140,8 +128,7 @@ public class PuestoC implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("Debe conservarse Evaluacion "
-                    	+ evaluacion);
+                    illegalOrphanMessages.add("Debe conservarse Evaluacion " + evaluacion);
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -156,8 +143,7 @@ public class PuestoC implements Serializable {
             puesto.setComidas(comidasNuevas);
             List<Evaluacion> evaluacionesNuevas = new ArrayList<Evaluacion>();
             for (Evaluacion evaluacion : evaluacionesNew) {
-                evaluacion = em.getReference(evaluacion.getClass(),
-                										 evaluacion.getLlave());
+                evaluacion = em.getReference(evaluacion.getClass(), evaluacion.getLlave());
                 evaluacionesNuevas.add(evaluacion);
             }
             evaluacionesNew = evaluacionesNuevas;
@@ -192,8 +178,7 @@ public class PuestoC implements Serializable {
             if (msg == null || msg.length() == 0) {
                 String id = puesto.getNombre();
                 if (buscaNombre(id) == null) {
-                   throw new
-                   EntidadInexistenteException("No existe puesto con id " + id);
+                    throw new EntidadInexistenteException("No existe puesto con id " + id);
                 }
             }
             throw ex;
@@ -205,13 +190,10 @@ public class PuestoC implements Serializable {
     }
 
     /**
-     * Metodo que se encarga de borrar un Puesto de la BD a partir del
-     * nombre del puesto.
-     * @param nombre El nombre del puesto que se quiere borrar.
-     * @throws InconsistenciasException	Excepcion lanzada al intentar borrar
-     * un puesto sin haber eliminado las evaluaciones.
-     * @throws EntidadInexistenteException Excepcion lanzada al intentar
-     * borrar un puesto de la BD que no se encuentra guardada.
+     * 
+     * @param nombre
+     * @throws InconsistenciasException
+     * @throws EntidadInexistenteException 
      */
     public void borrar(String nombre)
                   throws InconsistenciasException, EntidadInexistenteException {
@@ -224,8 +206,7 @@ public class PuestoC implements Serializable {
                 puesto = em.getReference(Puesto.class, nombre);
                 puesto.getNombre();
             } catch (EntityNotFoundException enfe) {
-                throw new EntidadInexistenteException("No existe puesto con id "
-                											 + nombre, enfe);
+                throw new EntidadInexistenteException("No existe puesto con id " + nombre, enfe);
             }
             List<String> mensajes = null;
             List<Evaluacion> consistencias = puesto.getEvaluaciones();
@@ -234,8 +215,7 @@ public class PuestoC implements Serializable {
                     mensajes = new ArrayList<String>();
                 }
                 mensajes.add("Puesto (" + puesto
-                + ") no puede destruirse porque no existe Evaluacion "
-                										+ evaluacion);
+                + ") no puede destruirse porque no existe Evaluacion " + evaluacion);
             }
             if (mensajes != null) {
                 throw new InconsistenciasException(mensajes);
@@ -255,33 +235,31 @@ public class PuestoC implements Serializable {
     }
 
     /**
-     * Metodo que recupera todos los puestos de la base de datos.
-     * @return Una llamada al metodo buscaPuestos.
+     * 
+     * @return 
      */
     public List<Puesto> buscaPuestos() {
         return buscaPuestos(true, -1, -1);
     }
 
     /**
-     * Metodo que recupera los puestos.
+     * 
      * @param maxResults
      * @param firstResult
-     * @return una llamada al metodo buscaPuestos.
+     * @return 
      */
     public List<Puesto> buscaPuestos(int maxResults, int firstResult) {
         return buscaPuestos(false, maxResults, firstResult);
     }
 
     /**
-     * Metodo que recupera la lista de todos los puestos registrados
-     * en la BD
+     * 
      * @param all
      * @param maxResults
      * @param firstResult
-     * @return una lista con todos los puestos de la BD
+     * @return 
      */
-    private List<Puesto> buscaPuestos(boolean all, int maxResults,
-    											   int firstResult) {
+    private List<Puesto> buscaPuestos(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -298,9 +276,9 @@ public class PuestoC implements Serializable {
     }
 
     /**
-     * Metodo que realiza una busqueda entre los puestos por el nombre.
-     * @param nombre El nombre del puesto que se quiere buscar.
-     * @return El puesto con el nombre que le pasamos como parametro.
+     * 
+     * @param nombre
+     * @return 
      */
     public Puesto buscaNombre(String nombre) {
         EntityManager em = getEntityManager();
@@ -312,30 +290,26 @@ public class PuestoC implements Serializable {
     }
 
     /**
-     * Metodo que realiza una busqueda entre los puestos por su ubicacion.
-     * @param latitud La latitud que corresponde al puesto que necesitamos
-     * buscar.
-     * @param longitud La longitud que corresponde al puesto que necesitamos
-     * buscar.
-     * @return El puesto que se encuentra ubicado en la latitud y longitud
-     * que pasamos como parametro.
+     * 
+     * @param latitud
+     * @param longitud
+     * @return 
      */
     public Puesto buscaLugar(String latitud, String longitud) {
-        try {
+        try{
             EntityManager em = getEntityManager();
-            return (Puesto) (em.createNamedQuery("Puesto.buscaLugar")
+            return (Puesto)(em.createNamedQuery("Puesto.buscaLugar")
                     .setParameter("latitud", latitud)
                     .setParameter("longitud", longitud).getSingleResult());
-        } catch(Exception ex){
+        }catch(Exception ex){
             System.err.println("Error al buscar el usuario con correo: "
                                                 + latitud + ex.getMessage());
-        } 
-        return null;
-    }  
+        } return null;
+    }    
 
     /**
-     * Metodo que se encarga de contar todos los puestos registrados en la BD.
-     * @return La cantidad de puestos que tenemos registrados en la BD.
+     * 
+     * @return 
      */
     public int cantidadDePuestos() {
         EntityManager em = getEntityManager();
@@ -349,4 +323,5 @@ public class PuestoC implements Serializable {
             em.close();
         }
     }
+    
 }

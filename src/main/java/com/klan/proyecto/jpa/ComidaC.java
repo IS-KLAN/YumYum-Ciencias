@@ -20,40 +20,39 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * Controlador JPA para insertar, editar o borrar Comida de la BD.
+ *
  * @author patlani
  */
 public class ComidaC implements Serializable {
 
     /**
-     * Constructor de la clase JPA de Comida.
-     * @param emf - objeto EntityManagerFactory para la conexión a la BD.
+     * 
+     * @param emf 
      */
     public ComidaC(EntityManagerFactory emf) {
         this.emf = emf;
     }
     
     /**
-     * Objeto de EntityManagerFactory encargado de la conexión a la BD.
+     * 
      */
     private EntityManagerFactory emf = null;
 
     /**
-     * Método encargado de comenzar la conexión con la BD.
-     * @return - Creación de un objeto para la conexión a la BD.
+     * 
+     * @return 
      */
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
     /**
-     * Método encargado de crear una nueva comida en la BD
-     * @param comida - objeto comida que se creará
-     * @throws EntidadExistenteException - se lanza esta excepción cuando ya
-     * existe una comida con el mismo nombre en la BD
-     * @throws Exception error ocurrido durante la creación de la comida.
+     * 
+     * @param comida
+     * @throws EntidadExistenteException
+     * @throws Exception 
      */
-    public void crear(Comida comida) throws EntidadExistenteException,Exception{
+    public void crear(Comida comida) throws EntidadExistenteException, Exception {
         if (comida.getPuestos() == null) {
             comida.setPuestos(new ArrayList<Puesto>());
         }
@@ -73,11 +72,10 @@ public class ComidaC implements Serializable {
                 PuestosPuesto = em.merge(PuestosPuesto);
             }
             em.getTransaction().commit();
-        }catch (Exception ex) {
-          if (buscaNombre(comida.getNombre()) != null) {
-          throw new EntidadExistenteException(
-                  "Comida " + comida + " ya existe.", ex);
-          }
+        } catch (Exception ex) {
+            if (buscaNombre(comida.getNombre()) != null) {
+                throw new EntidadExistenteException("Comida " + comida + " ya existe.", ex);
+            }
             throw ex;
         } finally {
             if (em != null) {
@@ -87,11 +85,10 @@ public class ComidaC implements Serializable {
     }
 
     /**
-     * Método para editar una comida existente en la BD
-     * @param comida- nombre de la comida que se editará
-     * @throws EntidadInexistenteException - excepción que se lanza cuando la
-     * comida que se desea editar no existe en la BD.
-     * @throws Exception - error ocurrido durante la edición de la comida.
+     * 
+     * @param comida
+     * @throws EntidadInexistenteException
+     * @throws Exception 
      */
     public void editar(Comida comida) throws EntidadInexistenteException, Exception {
         EntityManager em = null;
@@ -127,8 +124,7 @@ public class ComidaC implements Serializable {
             if (msg == null || msg.length() == 0) {
                 String id = comida.getNombre();
                 if (buscaNombre(id) == null) {
-                throw new EntidadInexistenteException("No existe comida con id " 
-                                                        + id);
+                    throw new EntidadInexistenteException("No existe comida con id " + id);
                 }
             }
             throw ex;
@@ -140,10 +136,9 @@ public class ComidaC implements Serializable {
     }
 
     /**
-     * Método para eliminar una comida de la BD
-     * @param nombre- comida a eliminar
-     * @throws EntidadInexistenteException - excepción que se lanza al no 
-     * existir la comida que se desea borrar.
+     * 
+     * @param nombre
+     * @throws EntidadInexistenteException 
      */
     public void borrar(String nombre) throws EntidadInexistenteException {
         EntityManager em = null;
@@ -154,9 +149,8 @@ public class ComidaC implements Serializable {
             try {
                 comida = em.getReference(Comida.class, nombre);
                 comida.getNombre();
-            }catch (EntityNotFoundException enfe) {
-              throw new EntidadInexistenteException("No existe comida con id " 
-                                                      + nombre, enfe);
+            } catch (EntityNotFoundException enfe) {
+                throw new EntidadInexistenteException("No existe comida con id " + nombre, enfe);
             }
             List<Puesto> Puestos = comida.getPuestos();
             for (Puesto PuestosPuesto : Puestos) {
@@ -173,43 +167,39 @@ public class ComidaC implements Serializable {
     }
 
     /**
-     * Método encargado de obtener un listado de todas las comidas que
-     * se encuentran almacenadas en la base de datos.
-     * @return - Lista de comida registrada en la base de datos.
+     * 
+     * @return 
      */
     public List<Comida> buscaComidas() {
         return buscaComidas(true, -1, -1);
     }
 
     /**
-     * Método encargado de obtener un listado de todas las comidas que
-     * se encuentran almacenadas en la base de datos. 
-     * @param resultadosMax - Indice hasta el que se obtienen las comidas
-     * @param primerResultado - Indice a partir del cual se obtienen las comidas
-     * @return - Lista con las comidas almacenadas en la BD
+     * 
+     * @param maxResults
+     * @param firstResult
+     * @return 
      */
-    public List<Comida> buscaComidas(int resultadosMax, int primerResultado) {
-        return buscaComidas(false, resultadosMax, primerResultado);
+    public List<Comida> buscaComidas(int maxResults, int firstResult) {
+        return buscaComidas(false, maxResults, firstResult);
     }
 
     /**
-     * Método encargado de obtener un listado de todas las comidas que
-     * se encuentran almacenadas en la base de datos.
-     * @param todo - Indica si se obtienen todas las entidades
-     * @param resultadosMax - Indice hasta el que se obtienen las comidas
-     * @param primerResultado - Indice a partir del cual se obtienen las comidas
-     * @return - Lista con las comidas almacenadas en la BD
+     * 
+     * @param all
+     * @param maxResults
+     * @param firstResult
+     * @return 
      */
-    private List<Comida> buscaComidas(boolean todo, int resultadosMax, 
-                                        int primerResultado) {
+    private List<Comida> buscaComidas(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             cq.select(cq.from(Comida.class));
             Query q = em.createQuery(cq);
-            if (!todo) {
-                q.setMaxResults(resultadosMax);
-                q.setFirstResult(primerResultado);
+            if (!all) {
+                q.setMaxResults(maxResults);
+                q.setFirstResult(firstResult);
             }
             return q.getResultList();
         } finally {
@@ -218,10 +208,9 @@ public class ComidaC implements Serializable {
     }
 
     /**
-     * Método que obtiene una comida almacenada en la base de datos,
-     * la cual es buscada a través de su nombre.
-     * @param nombre - nombre de la comida a buscar.
-     * @return Regresa el objeto comida encontrado.
+     * 
+     * @param nombre
+     * @return 
      */
     public Comida buscaNombre(String nombre) {
         EntityManager em = getEntityManager();
@@ -233,9 +222,8 @@ public class ComidaC implements Serializable {
     }
 
     /**
-     * Método encargado de obtener el número de comidas
-     * almacenados en la base de datos.
-     * @return - el número de comidas registradas.
+     * 
+     * @return 
      */
     public int cantidadDeComidas() {
         EntityManager em = getEntityManager();

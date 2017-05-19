@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:h="http://java.sun.com/jsf/html"
+            xmlns:ui="http://java.sun.com/jsf/facelets"
+            xmlns:b="http://bootsfaces.net/ui">
+    <h:head>
+        <title>YumYum CIencias</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="author" content="KLAN"/>
+        <meta charset="utf-8"/>
+    </h:head>
+    <h:body style="padding-top:70px">
+        <h:form>
+            <!-- Barra de navegación, mensajes de información y carrusel de puestos. -->
+            <ui:include src="index/opciones.xhtml"/>
+            <b:messages/>
+            <ui:include src="index/carrusel.xhtml"/>
+        </h:form>
+        <b:container>            
+            <footer> <p>© KLAN 2017</p> </footer>
+        </b:container>
+    </h:body>
+</html>
