@@ -18,15 +18,15 @@
             </h:panelGrid>
             <b:inputText style="margin: 5px; font-size: medium" id="comentario" placeholder="Escribe tu comentario ..." value="#{evaluador.comentario}"/>
         </h:panelGrid>
-        <b:commandButton look="sucess" size="md" value="Guardar" icon="ok"
+        <b:commandButton look="primary" size="md" value="Guardar" icon="ok"
                          update="datos" process="@form" actionListener="#{evaluador.evaluar()}">
                         <f:actionListener binding="#{contenido.cargar()}"/></b:commandButton>
         <b:commandButton look="danger" size="md" value="Cancelar" icon="remove"
-        update="campo" process="@this" action-listener="#{evaluador.cancelar()}"/>
+        update="campo" process="@this" actionListener="#{evaluador.cancelar()}"/>
     </h:form>
     <!-- Se muestran sólo las evaluaciones si se trata de un invitado. -->
     <h:form rendered="#{!ingresoUsuario.accedido()}">
-        <h:panelGrid id="datos">
+        <h:panelGrid id="sinEvaluaciones">
             <ui:include src="evaluaciones.xhtml"></ui:include>
         </h:panelGrid>
     </h:form>
