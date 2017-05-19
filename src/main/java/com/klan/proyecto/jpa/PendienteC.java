@@ -18,37 +18,39 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 /**
- *
+ * Controlador JPA para insertar, editar o borrar un Usuario en Pendiente de la
+ * BD
  * @author patlani
  */
 public class PendienteC implements Serializable {
 
     /**
-     * 
-     * @param emf 
+     * Constructor de la clase JPA de Pendiente.
+     * @param emf - objeto EntityManagerFactory para la conexión a la BD.
      */
     public PendienteC(EntityManagerFactory emf) {
         this.emf = emf;
     }
     
     /**
-     * 
+     * Objeto de EntityManagerFactory encargado de la conexión a la BD.
      */
     private EntityManagerFactory emf = null;
 
     /**
-     * 
-     * @return 
+     * Método encargado de comenzar la conexión con la BD.
+     * @return - Creación de un objeto para la conexión a la BD.
      */
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
     /**
-     * 
-     * @param pendiente
-     * @throws EntidadExistenteException
-     * @throws Exception 
+     * Método encargado de crear un nuevo usuario pendiente en la BD
+     * @param pendiente - objeto pendiente que se creará
+     * @throws EntidadExistenteException - se lanza esta excepción cuando ya
+     * existe un usuario con el mismo nombre en la BD
+     * @throws Exception error ocurrido durante la creación del usuario.
      */
     public void crear(Pendiente pendiente)
                   throws EntidadExistenteException, Exception {
@@ -61,7 +63,7 @@ public class PendienteC implements Serializable {
         } catch (Exception ex) {
             if (buscaNombre(pendiente.getNombre()) != null) {
                 throw new EntidadExistenteException(
-                                        "Pendiente " + pendiente + " ya existe.", ex);
+                                  "Pendiente " + pendiente + " ya existe.", ex);
             }
             throw ex;
         } finally {
@@ -71,11 +73,12 @@ public class PendienteC implements Serializable {
         }
     }
 
-    /**
-     * 
-     * @param pendiente
-     * @throws EntidadInexistenteException
-     * @throws Exception 
+     /**
+     * Método para editar un pendiente existente en la BD
+     * @param pendiente - datos del pendiente que se editará
+     * @throws EntidadInexistenteException - excepción que se lanza cuando el
+     * pendiente que se desea editar no existe en la BD.
+     * @throws Exception - error ocurrido durante la edición del pendiente.
      */
     public void editar(Pendiente pendiente)
                   throws EntidadInexistenteException, Exception {
@@ -90,7 +93,8 @@ public class PendienteC implements Serializable {
             if (msg == null || msg.length() == 0) {
                 String id = pendiente.getNombre();
                 if (buscaNombre(id) == null) {
-                    throw new EntidadInexistenteException("No existe pendiente con id " + id);
+                    throw new EntidadInexistenteException(
+                            "No existe pendiente con id " + id);
                 }
             }
             throw ex;
@@ -102,9 +106,10 @@ public class PendienteC implements Serializable {
     }
 
     /**
-     * 
-     * @param nombre
-     * @throws EntidadInexistenteException 
+     * Método para eliminar un usuario  de la BD
+     * @param nombre- nombre de usuario pendiente a eliminar
+     * @throws EntidadInexistenteException - excepción que se lanza al no 
+     * existir el uduario que se desea borrar de pendiente.
      */
     public void borrar(String nombre) throws EntidadInexistenteException {
         EntityManager em = null;
@@ -117,7 +122,7 @@ public class PendienteC implements Serializable {
                 pendiente.getNombre();
             } catch (EntityNotFoundException enfe) {
                 throw new EntidadInexistenteException(
-                                        "No existe pendiente con id " + nombre, enfe);
+                                "No existe pendiente con id " + nombre, enfe);
             }
             em.remove(pendiente);
             em.getTransaction().commit();
@@ -128,41 +133,46 @@ public class PendienteC implements Serializable {
         }
     }
 
-    /**
-     * 
-     * @return 
+   /**
+     * Método encargado de obtener un listado de todos los usuarios pendientes
+     * que se encuentran almacenados en la base de datos.
+     * @return - Lista de pendientes registrados en la base de datos.
      */
     public List<Pendiente> buscaPendientes() {
         return buscaPendientes(true, -1, -1);
     }
 
     /**
-     * 
-     * @param maxResults
-     * @param firstResult
-     * @return 
+     * Método encargado de obtener un listado de todos los usuarios pendientes
+     * que se encuentran almacenados en la base de datos.
+     * @param resultadosMax - Indice hasta el que se obtienen los pendientes
+     * @param primerResultado - Indice a partir del cual se obtienen los 
+     * pendientes
+     * @return - Lista de pendientes registrados en la base de datos.
      */
-    public List<Pendiente> buscaPendientes(int maxResults, int firstResult) {
-        return buscaPendientes(false, maxResults, firstResult);
+    public List<Pendiente> buscaPendientes(int resultadosMax, int primerResultado) {
+        return buscaPendientes(false, resultadosMax, primerResultado);
     }
 
     /**
-     * 
-     * @param all
-     * @param maxResults
-     * @param firstResult
-     * @return 
+     * Método encargado de obtener un listado de todos los usuarios pendientes
+     * que se encuentran almacenados en la base de datos.
+     * @param todo - Indica si se obtienen todas las entidades
+     * @param resultadosMax - Indice hasta el que se obtienen los pendientes
+     * @param primerResultado - Indice a partir del cual se obtienen los 
+     * usuarios pendientes
+     * @return - Lista con los usuarios almacenadas en la BD
      */
-    private List<Pendiente> buscaPendientes(boolean all, 
-                                                                                          int maxResults, int firstResult) {
+    private List<Pendiente> buscaPendientes(boolean todo, 
+                                                                                          int resultadosMax, int primerResultado) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             cq.select(cq.from(Pendiente.class));
             Query q = em.createQuery(cq);
-            if (!all) {
-                q.setMaxResults(maxResults);
-                q.setFirstResult(firstResult);
+            if (!todo) {
+                q.setMaxResults(resultadosMax);
+                q.setFirstResult(primerResultado);
             }
             return q.getResultList();
         } finally {
@@ -171,9 +181,10 @@ public class PendienteC implements Serializable {
     }
 
     /**
-     * 
-     * @param nombre
-     * @return 
+     * Método que obtiene un usuario pendiente almacenado en la base de datos,
+     * el cual es buscado a través de su nombre.
+     * @param nombre - nombre del usuario pendiente a buscar.
+     * @return Regresa el objeto pendiente encontrado.
      */
     public Pendiente buscaNombre(String nombre) {
         EntityManager em = getEntityManager();
@@ -185,9 +196,9 @@ public class PendienteC implements Serializable {
     }
 
     /**
-     * 
-     * @param correo
-     * @return 
+     * Método que busca un usuario pendiente a través de su correo electrónico
+     * @param correo - correo mediante el cual se realiza la busqueda.
+     * @return Regresa el objeto pendiente encontrado.
      */
     public Pendiente buscaCorreo(String correo) {
         try{
@@ -201,8 +212,9 @@ public class PendienteC implements Serializable {
     }    
 
     /**
-     * 
-     * @return 
+     * Método encargado de obtener el número de usuarios pendientes
+     * almacenados en la base de datos.
+     * @return - el número de usuarios pendientes registrados.
      */
     public int cantidadDePendientes() {
         EntityManager em = getEntityManager();
