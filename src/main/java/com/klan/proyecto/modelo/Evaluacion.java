@@ -93,22 +93,6 @@ public class Evaluacion implements Serializable {
     }
 
     /**
-     * Constructor con sus atributos definidos.
-     *
-     * @param nombrePuesto Es el nombre del puesto en el que se hace la
-     * evaluación.
-     * @param nombreUsuario Es el nombre del usuario que hace la evaluación.
-     * @param comentario Es el comentario de la evaluación.
-     * @param calificacion Es la calificación de la evaluación.
-     */
-    public Evaluacion(String nombrePuesto, String nombreUsuario,
-                                        String comentario, int calificacion) {
-        this.llave = new EvaluacionP(nombrePuesto, nombreUsuario);
-        this.comentario = comentario;
-        this.calificacion = calificacion;
-    }
-
-    /**
      * Constructor con llave definida.
      *
      * @param nombrePuesto Es el nombre del puesto en el que se hace la
