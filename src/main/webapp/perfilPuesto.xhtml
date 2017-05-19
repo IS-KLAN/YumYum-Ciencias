@@ -11,17 +11,21 @@
         <meta name="author" content="KLAN"/>
         <meta charset="utf-8"/>
     </h:head>
-    <h:body style="padding-top:70px" rendered="#{contenido.contenidoDisponible()}">
+    <h:body style="padding-top:70px">
         <!-- Barra de navegación. -->
         <h:form>
             <ui:include src="index/opciones.xhtml"/>
         </h:form>
         <b:messages/>
         <b:container>
+            
             <h:outputLabel value="#{contenido.puesto.nombre}" style="font-size: 28px">
-                    <h:form> <p:rating value="#{contenido.calificacionGlobal}" readonly="true" /> </h:form>
-                </h:outputLabel>
-            <h:form rendered="#{!ingresoAdministrador.accedido()}">
+                <h:form> <p:rating value="#{contenido.calificacionGlobal}" readonly="true" /> </h:form>
+            </h:outputLabel>
+            <h:form> 
+                <ui:include src="index/opcionesPuesto.xhtml"/>
+            </h:form>
+            <h:form>
                 <!-- Pestañas que muestran el contenido del puesto. -->
                 <b:tabView>
                     <b:tab title="Descripción" style="font-size: medium">
@@ -32,20 +36,6 @@
                     </b:tab>
                     <b:tab title="Comentarios" style="font-size: medium">
                         <ui:include src="perfilPuesto/comentario.xhtml" />
-                    </b:tab>
-                </b:tabView>
-            </h:form>
-            <h:form rendered="#{ingresoAdministrador.accedido()}">
-                <!-- Pestañas que muestran el contenido del puesto. -->
-                <b:tabView>
-                    <b:tab title="Descripción" style="font-size: medium">
-                        <ui:include src="editarPuesto/descripcion.xhtml" />
-                    </b:tab>
-                    <b:tab title="Comida" style="font-size: medium">
-                        <ui:include src="editarPuesto/comida.xhtml" />
-                    </b:tab>
-                    <b:tab title="Comentarios" style="font-size: medium">
-                        <ui:include src="editarPuesto/evaluaciones.xhtml" />
                     </b:tab>
                 </b:tabView>
             </h:form>
