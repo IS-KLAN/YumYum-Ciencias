@@ -18,7 +18,7 @@
         </h:form>
         <b:messages/>
         <b:container>
-            <h:form  >
+            <h:form rendered="#{ingresoAdministrador.accedido()}">
                 <!-- Pestañas que muestran el contenido del puesto. -->
                 <b:dataTable value="#{usuarioBorrado.usuarios()}" var="u" select="true" searching="false" 
                             border='false' paginated="false" >
