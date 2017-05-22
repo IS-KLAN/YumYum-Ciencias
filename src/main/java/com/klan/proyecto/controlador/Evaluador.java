@@ -77,6 +77,9 @@ public class Evaluador implements Serializable {
         }
     }
 
+    /**
+     * Método que carga información de los puestos en la BD.
+     */
     @PostConstruct
     public void cargar() {
         // Se realiza una conexión a la BD.
@@ -228,8 +231,8 @@ public class Evaluador implements Serializable {
         EvaluacionC controlador = new EvaluacionC(emf);
         actual.setComentario(null);
         try { // Se busca la existencia previa de una evaluación.
-            controlador.borrar(actual.getLlave());
-            // controlador.editar(actual);
+            //controlador.borrar(actual.getLlave());
+            controlador.editar(actual);
             System.out.println("Se borró el comentario.");
             // Se actualiza el contenido del puesto.
             puesto = new PuestoC(emf).buscaNombre(puesto.getNombre());
