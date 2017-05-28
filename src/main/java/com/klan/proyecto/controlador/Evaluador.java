@@ -215,6 +215,39 @@ public class Evaluador implements Serializable {
     }
 
     /**
+     * Método que se encarga de capturar la evaluación
+     * ingresada en la interfaz.
+     *
+     * @param actual Evaluación seleccionada
+     */
+    public void eliminarComentario(Evaluacion actual) {
+        // Se realiza una conexión a la BD.
+        EntityManagerFactory emf = Persistence
+                .createEntityManagerFactory("YumYum-Ciencias");
+        // Se inicializa un C para realizar una consulta de evaluación.
+        EvaluacionC controlador = new EvaluacionC(emf);
+        actual.setComentario(null);
+        try { // Se busca la existencia previa de una evaluación.
+            controlador.borrar(actual.getLlave());
+            // controlador.editar(actual);
+            System.out.println("Se borró el comentario.");
+            // Se actualiza el contenido del puesto.
+            puesto = new PuestoC(emf).buscaNombre(puesto.getNombre());
+            httpServletRequest.getSession().setAttribute("puesto", puesto);
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+            aviso = "Error al eliminar el comentario:";
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            aviso, null));
+        } // Si no ocurre una excepción se avisa al usuario.
+        aviso = "Comentario Eliminado.";
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        aviso, null));
+    }
+
+    /**
      * Método que restablece la evaluación obtenida al
      * momento.
      */
