@@ -3,6 +3,7 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
             xmlns:h="http://java.sun.com/jsf/html"
             xmlns:ui="http://java.sun.com/jsf/facelets"
+            xmlns:p="http://primefaces.org/ui"
             xmlns:b="http://bootsfaces.net/ui">
     <h:head>
         <title>YumYum CIencias</title>
@@ -11,12 +12,28 @@
         <meta charset="utf-8"/>
     </h:head>
     <h:body style="padding-top:70px">
-        <h:form>
+        <b:container>
+        <h:form id="comida">
             <!-- Barra de navegación, mensajes de información y carrusel de puestos. -->
             <ui:include src="index/opciones.xhtml"/>
             <b:messages/>
-            <ui:include src="index/carrusel.xhtml"/>
+            <h1>Agrega alimentos</h1>
+        <h:panelGrid columns="4" cellpadding="5">
+            <h:outputLabel for="nombre" value="Nombre:" style="font-weight:bold" />
+            <p:inputText id="nombre" value="#{agregaComida.nombre}" placeholder="."/>
+            <p:commandButton value="Guardar" icon="ui-icon-check" action="#{agregaComida.agregar()}" update="@all" process="@all"/>
+        </h:panelGrid>
         </h:form>
+        </b:container>
+        
+        <b:container>
+        <p:dataScroller id="lista" value="#{agregaComida.comida()}" var="c" chunkSize="15" mode="inline" scrollHeight="200">
+            <b:panelGrid columns="1" style="margin-top: 8px">
+                <b:label severity="primary" tiny-screen="one-fourth" text="#{c.nombre}" style="font-size: larger; width: 50%"/>
+            </b:panelGrid>
+        </p:dataScroller>
+        </b:container>
+        
         <b:container>            
             <footer> <p>© KLAN 2017</p> </footer>
         </b:container>

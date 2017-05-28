@@ -14,10 +14,12 @@
     <h:body style="padding-top:70px">
         <b:container>
             <h1>Formulario de registro</h1> <br/>
-            <h:form id="miRegistro"> <!--Camiar por miFormulario-->
+            <h:form id="miRegistro" enctype="multipart/form-data">
                 <p:messages id="messages" autoUpdate="true" closable="true" />
                 <ui:include src="index/opciones.xhtml"/>
                 <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel value="Imagen de Perfil: " style="font-size: medium"/>
+                    <p:fileUpload id="up" label="Cargar" value="#{registro.archivo}" mode="simple" skinSimple="true" />
                     <h:outputLabel for="nombre" value="Nombre de usuario:" style="margin-left: 4%; font-size: medium"/>
                     <p:inputText value="#{registro.nombreUsuario}" placeholder="Nombre" required="true" id="nombre" size="15">
                         <p:keyFilter regEx="/[A-Za-z0-9_. ]/"/>

@@ -4,7 +4,9 @@
             xmlns:b="http://bootsfaces.net/ui"
             xmlns:p="http://primefaces.org/ui">
     <h:panelGrid style="margin: 6px" >
-        <h:outputText value="#{contenido.puesto.descripcion}"  style="text-align: justify; font-size: larger"/>
+       <p:inplace id="basic">
+            <p:inputText value="#{contenido.puesto.descripcion}"  style="text-align: justify; font-size: larger" />
+        </p:inplace>
     </h:panelGrid>
     <b:panelGrid columns="2">
         <p:graphicImage value="resources/#{contenido.puesto.rutaImagen}" alt="YumYum-Ciencias" style="width: 100%; height: 320px"/>
