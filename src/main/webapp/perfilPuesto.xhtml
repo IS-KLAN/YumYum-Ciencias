@@ -35,7 +35,7 @@
                     </b:tab>
                 </b:tabView>
             </h:form>
-            <h:form rendered="#{ingresoAdministrador.accedido()}">
+            <h:form id="editar" rendered="#{ingresoAdministrador.accedido()}">
                 <!-- Pestañas que muestran el contenido del puesto. -->
                 <b:tabView>
                     <b:tab title="Descripción" style="font-size: medium">
@@ -48,7 +48,7 @@
                         <ui:include src="editarPuesto/evaluaciones.xhtml" />
                     </b:tab>
                 </b:tabView>
-            </h:form>
+                </h:form>
             <footer> <br/><p>© KLAN 2017</p> </footer>
         </b:container>
     </h:body>

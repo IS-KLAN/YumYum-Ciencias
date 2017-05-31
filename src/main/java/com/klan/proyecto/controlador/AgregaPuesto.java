@@ -48,6 +48,7 @@ public class AgregaPuesto implements Serializable {
     private UploadedFile archivo;
     private Double latitud;
     private Double longitud;
+    private Puesto puesto;
 
     @PostConstruct
     public void cargar() {
@@ -135,6 +136,32 @@ public class AgregaPuesto implements Serializable {
     public Marker getMarcador() {
         return marcador;
     }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
+
+    public Puesto getPuesto() {
+        return puesto;
+    }
+
+    public void setPuesto(Puesto puesto) {
+        this.puesto = puesto;
+    }
+    
+    
 
     /**
      * Método que se encarga de avisar al usuario que la ubicación ya ha sido registrada.
@@ -227,4 +254,5 @@ public class AgregaPuesto implements Serializable {
             System.err.println("Error al agregar el puesto\n" + ex.getMessage());
         } return "agregaPuesto";
     }
+    
 }

@@ -96,6 +96,8 @@ public class IngresoUsuario implements Serializable{
             faceContext.addMessage(null, message);
             // Se asegura que el mensaje se muestre después de la redirección.
             faceContext.getExternalContext().getFlash().setKeepMessages(true);
+            if (httpServletRequest.getSession().getAttribute("administrador") != null)
+                httpServletRequest.getSession().removeAttribute("administrador");
             return "index?faces-redirect=true";
         } Pendiente posible = new PendienteC(emf).buscaCorreo(correo);
         if (posible != null) {

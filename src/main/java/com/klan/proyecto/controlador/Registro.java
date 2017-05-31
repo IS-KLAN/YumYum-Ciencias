@@ -37,8 +37,8 @@ import org.primefaces.model.UploadedFile;
  * Bean utilizado para pruebas al perfil de un puesto.
  * @author nancy
  */
-@ManagedBean // LEER LA DOCUMENTACIÖN DE ESTA ANOTACIÓN: Permite dar de alta al bean en la aplicación
-@RequestScoped // Sólo está disponible a partir de peticiones al bean
+@ManagedBean 
+@RequestScoped 
 public class Registro implements Serializable{
 
     private final String correoKLAN = "yumyumciencias@gmail.com"; // Cuenta que envía el correo.
@@ -157,8 +157,15 @@ public class Registro implements Serializable{
      */
     public boolean guardaImagen() {
         final String dir = System.getProperty("user.dir").replace("\\", "/"); // Directorio de ejecución actual.
-        final String sub = "/src/main/webapp/resources"; // Directorio especificado para guardar imagenes. 
-        if (archivo != null && archivo.getSize() > 0) { // Sólo si se intenta cargar una rutaImagen.
+        final String sub = "/src/main/webapp/resourcesPerfil"; // Directorio especificado para guardar imagenes. 
+        rutaImagen = nombreUsuario + ".jpg";
+        System.out.println("IMAGEN: " + rutaImagen);
+        if(archivo != null){
+            System.out.println("BIEN");
+        }else{
+            System.out.println("MAL!!");
+        }
+        /*if (archivo != null && archivo.getSize() > 0) { // Sólo si se intenta cargar una rutaImagen.
             rutaImagen = nombreUsuario + ".jpg"; // Se define el nombrePuesto de la rutaImagen.
             try { // EL proceso de escritura en archivos puede lanzar excepciones.
                 File f = new File(dir + sub, rutaImagen); // Se define el Directorio y Nombre con extensión del file.
@@ -178,7 +185,7 @@ public class Registro implements Serializable{
         } else {
             rutaImagen = "default.jpg";
             System.out.println("No se cargó imagen :(");
-        } return true;
+        }*/ return true;
     }
     
     /**
@@ -307,4 +314,6 @@ public class Registro implements Serializable{
         FacesMessage.SEVERITY_INFO, "Ha ocurrido un error, intente  más tarde :C", null));
         return "confirmacion";
     }
+    
+   
 }

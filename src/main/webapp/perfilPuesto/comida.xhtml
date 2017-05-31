@@ -4,11 +4,10 @@
             xmlns:p="http://primefaces.org/ui">
     <!-- Si hay comida se despliega la tabla de evaluaciones. -->
     <h:form rendered="#{contenido.comidaDisponible()}">
-        <p:dataScroller value="#{contenido.puesto.comidas}" var="c" chunkSize="15" mode="inline" scrollHeight="350">
-            <b:panelGrid columns="1" style="margin-top: 10px">
-                    <b:label severity="primary" tiny-screen="one-fourth" text="#{c.nombre}" style="font-size: larger; width: 100%"/>
-            </b:panelGrid>
-        </p:dataScroller>
+        <b:dataTable value="#{contenido.puesto.comidas}" var="c"  select="true" searching="false" 
+                            border='false' paginated="false" >
+                    <b:dataTableColumn value ="#{c.nombre}" order="asc" label="Comidas"/>
+        </b:dataTable>
     </h:form>
     <!-- Si no hay comida se avisa que no hay contenido disponible -->
     <h:form rendered="#{!contenido.comidaDisponible()}">
