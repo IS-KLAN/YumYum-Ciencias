@@ -1,30 +1,21 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:ui="http://java.sun.com/jsf/facelets"
-       xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:b="http://bootsfaces.net/ui"
-       xmlns:p="http://primefaces.org/ui"
-       xmlns:f="http://xmlns.jcp.org/jsf/core">
+            xmlns:ui="http://java.sun.com/jsf/facelets"
+            xmlns:h="http://java.sun.com/jsf/html"
+            xmlns:b="http://bootsfaces.net/ui"
+            xmlns:p="http://primefaces.org/ui"
+            xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:panelGrid style="margin: 6px" >
-        <h:outputLabel value="Si deseas editar la descripción actual, escribe sobre el campo" ></h:outputLabel> 
-        <b:inputTextarea id="nuevaDescripcion" value="#{modificacionPuesto.descripcion}"
+            <h:outputLabel value="Si deseas editar la descripción actual, escribe sobre el campo" ></h:outputLabel> 
+            <b:inputTextarea id="nuevaDescripcion" value="#{modificacionPuesto.descripcion}"
                          placeholder="#{contenido.puesto.descripcion}" 
                          rows="4"/>
-        <b:commandButton look="primary" size="md" value="Guardar cambios" icon="edit" 
-                         action="#{modificacionPuesto.cambiarDescripcion()}">
-        </b:commandButton>
-
+            <b:commandButton look="primary" size="md" value="Guardar cambios" icon="edit" 
+                            action="#{modificacionPuesto.cambiarDescripcion()}">
+            </b:commandButton>
+      
     </h:panelGrid>
     <b:panelGrid columns="2">
-        <h:form id="agregaPuesto" enctype="multipart/form-data">
-            <h:panelGrid columns="1">
-                <h:outputLabel value="¿Deseas cambiar la imagen?"></h:outputLabel> 
-                <p:fileUpload id="up" label="Agregar nueva imagen" value="#{modificacionPuesto.archivo}" mode="simple" skinSimple="true" />
-                <p:graphicImage value="resources/#{contenido.puesto.rutaImagen}" alt="YumYum-Ciencias" style="width: 100%; height: 320px"/>
-                <b:commandButton look="primary" size="md" value="Guardar cambios" icon="edit" 
-                                 action="#{modificacionPuesto.cambiarImagen()}">
-                </b:commandButton>
-            </h:panelGrid>
-        </h:form>
+        <p:graphicImage value="resources/#{contenido.puesto.rutaImagen}" alt="YumYum-Ciencias" style="width: 100%; height: 320px"/>
         <b:label text="Ubicación:" style="font-size: large"><ui:include src="mapa.xhtml"/></b:label>
     </b:panelGrid>
 </html>

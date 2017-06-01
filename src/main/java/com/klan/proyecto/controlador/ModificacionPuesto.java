@@ -5,16 +5,10 @@
  */
 package com.klan.proyecto.controlador;
 
-import com.klan.proyecto.jpa.PendienteC;
+import com.klan.proyecto.jpa.ComidaC;
 import com.klan.proyecto.jpa.PuestoC;
-import com.klan.proyecto.jpa.UsuarioC; // Para consultar usuarios de la BD.
 import com.klan.proyecto.modelo.Comida;
-import com.klan.proyecto.modelo.Pendiente;
 import com.klan.proyecto.modelo.Puesto;
-import com.klan.proyecto.modelo.Usuario; // Para construir un usuario.
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 
 import javax.faces.application.FacesMessage; // Para mostrar y obtener mensajes de avisos.
 import javax.faces.bean.ManagedBean; // Para inyectar código dentro de un JSF.
@@ -24,6 +18,7 @@ import javax.persistence.EntityManagerFactory; // Para conectarse a la BD.
 import javax.persistence.Persistence; // Para definir los parámetros de conexión a la BD.
 import javax.servlet.http.HttpServletRequest; // Para manejar datos guardados.
 import java.io.Serializable; // Para conservar la persistencia de objetos que se guarden.
+import java.util.ArrayList;
 import java.util.List;
 import org.primefaces.model.UploadedFile;
 
@@ -47,21 +42,33 @@ public class ModificacionPuesto implements Serializable{
     private Puesto puesto;
         
     public String rutaImagen;
-    
      
     public UploadedFile archivo;
-
-    public UploadedFile getArchivo() {
-        return archivo;
-    }
-
-    public void setArchivo(UploadedFile archivo) {
-        this.archivo = archivo;
-    }
      
     public String descripcion;
 
-   
+    private String[] seleccion;
+
+    public String[] getSeleccion() {
+        return seleccion;
+    }
+
+    public void setSeleccion(String[] seleccion) {
+        this.seleccion = seleccion;
+    }
+    
+    private List<String> listaComida;
+
+    public List<String> getListaComida() {
+        return listaComida;
+    }
+
+    public void setListaComida(List<String> listaComida) {
+        this.listaComida = listaComida;
+    }
+
+
+    
     public String getDescripcion() {
         return descripcion;
     }
@@ -120,54 +127,51 @@ public class ModificacionPuesto implements Serializable{
                 new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "¡Comida borrada exitosamente!", null));
         } catch (Exception e) {
-                System.err.println(" Error al borrar la comida controlador" + e.getMessage());
-                    FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Error al borrar la comida controlador", e.getMessage()));
+                System.err.println(" Error al borrar la comida " + e.getMessage());
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                FacesMessage.SEVERITY_ERROR, "Error al borrar la comida.", null));
         } 
     }
 
+    public void agregaNuevaComida(){
+        FacesMessage message;
+        try {
+            EntityManagerFactory emf = Persistence
+                .createEntityManagerFactory("YumYum-Ciencias");
+            Puesto p = (Puesto) httpServletRequest.getSession()
+                .getAttribute("puesto");
+            PuestoC puestoC = new PuestoC(emf);
+                      
+            for (String comida : seleccion) { 
+                p.getComidas().add(new Comida(comida));
+            }
+          puestoC.editar(p);
+            httpServletRequest.getSession().setAttribute("puesto", p);
+                    FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "¡Comida(s) agregadas exitosamente!", null));
+        } catch (Exception e) {
+                System.err.println(" Error al agregar comida" + e.getMessage());
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                FacesMessage.SEVERITY_ERROR, "Error al agregar la comida.", null));
+        }
+    }
     
-    public void cambiarImagen() {
+    
+    public List<String> getComidas() {
         EntityManagerFactory emf = Persistence
                 .createEntityManagerFactory("YumYum-Ciencias");
+        listaComida = new ArrayList<>(); 
         Puesto p = (Puesto) httpServletRequest.getSession()
                 .getAttribute("puesto");
-        final String dir = System.getProperty("user.dir").replace("\\", "/"); // Directorio de ejecución actual.
-        final String sub = "/src/main/webapp/resources"; // Directorio especificado para guardar imagenes. 
-        System.out.println("Archivo: " + sub);
-        if (archivo != null && archivo.getSize() > 0) { // Sólo si se intenta cargar una rutaImagen.
-            rutaImagen = p.getNombre() + "-" + p.getLatitud() + ".jpg"; // Se define el nombrePuesto de la rutaImagen.
-            System.out.println("\n"+ rutaImagen+ "\n");
-            try { // EL proceso de escritura en archivos puede lanzar excepciones.
-                File f = new File(dir + sub, rutaImagen); // Se define el Directorio y Nombre con extensión del file.
-                FileOutputStream output = new FileOutputStream(f); // Flujo de escritura para guardar la rutaImagen.
-                InputStream input = archivo.getInputstream(); // Flujo de lectura para cargar el archivo subido.
-                int read = 0; // Bandera para saber si se sigue leyendo bytes del archivo subido.
-                byte[] bytes = new byte[1024]; // Buffer para cargar bloques de 1024 bytes (1 MegaByte).
-                while ((read = input.read(bytes)) != -1) output.write(bytes, 0, read); // Se escribe el archivo con lo que se lee.
-                
-               
-                
-                PuestoC puestoC = new PuestoC(emf);
-                puestoC.actualizaImagen(p, rutaImagen, bytes);
-            
-            } catch (Exception ex) {
-                System.err.println(" Error al cambiar imagen" + ex.getMessage());
-                    FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Error al guardar la imagen", ex.getMessage()));
+        List<Comida> comidasPuestoActual = p.getComidas();
+        List<Comida> todas = new ComidaC(emf).buscaComidas();
+        for (Comida c : todas){
+            if(!comidasPuestoActual.contains(c)){
+                listaComida.add(c.getNombre());
             }
-
-        } else {
-            rutaImagen = "default.jpg";
-            System.out.println("No se cargó imagen :(");
         }
-        
-        httpServletRequest.getSession().setAttribute("puesto", p);
-        FacesContext.getCurrentInstance().addMessage(null,
-        new FacesMessage(FacesMessage.SEVERITY_INFO,
-        "¡Nueva imagen guardada exitosamente!", null));
+        return listaComida;
     }
     
 }
