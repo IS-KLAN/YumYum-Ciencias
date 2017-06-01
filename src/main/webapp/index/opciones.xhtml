@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html  xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:b="http://bootsfaces.net/ui">
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:p="http://primefaces.org/ui">
     <style>
         .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus
         { background-color: #ddd !important; }
     </style>
     <!-- Si no se tiene una sesión iniciada se muestran las opciones de invitado. -->
-    <b:container rendered="#{!ingresoUsuario.accedido()}">
+    <b:container>
         <b:navBar brand="YumYum Ciencias" inverse="true" brandHref="index.xhtml" fixed="top">
             <b:navbarLinks>
                 <b:navLink value="Principal" iconAwesome="home" href="index.xhtml"/>
@@ -24,9 +25,14 @@
                 <b:navLink value="Principal" iconAwesome="home" href="index.xhtml"/>
                 <b:navLink value="Ver Mapa" icon="glyphicon-globe" href="mapa.xhtml"/>
                 <!-- Opción para cerrar sesión con redirección. -->
-                <b:navCommandLink value="Salir (#{ingresoUsuario.usuarioActivo()})"
-                                  action="index?faces-redirect=true" actionListener="#{salidaUsuario.cerrar()}" 
-                                  icon="glyphicon glyphicon-log-out"/>
+                <b:navCommandLink
+                    action="index?faces-redirect=true" actionListener="#{salidaUsuario.cerrar()}" 
+                    icon="glyphicon glyphicon-log-out">Salir
+                </b:navCommandLink>
+                <b:navLink href="#">
+                    <p:graphicImage value="resources/#{ingresoUsuario.imagenUsuario()}" alt="YumYum-Ciencias" style="width: 25px; height: 25px;"/>
+                    <b:label text="#{ingresoUsuario.nombreUsuario()}" severity="" style="font-size: medium"/>
+                </b:navLink>
             </b:navbarLinks>
         </b:navBar>
     </b:container>

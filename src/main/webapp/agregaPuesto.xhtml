@@ -10,15 +10,15 @@
         <meta name="author" content="KLAN"/>
         <meta charset="utf-8"/>
     </h:head>
-    <h:body style="padding-top:50px">
+    <h:body style="padding-top:70px">
         <!-- Barra de navegación. -->
+        <h:form><ui:include src="index/opciones.xhtml"/></h:form>
         <b:container rendered="#{ingresoAdministrador.accedido()}">
-            <h:form><ui:include src="index/opciones.xhtml"/></h:form>
             <p:growl id="messages" showDetail="true" autoUpdate="true"/>
             <h1>Agregar Puesto<br/></h1>
             <b:panelGrid columns="2">
                 <b:panelGrid columns="1">
-                    <h:outputLabel value="Marque la ubicación:" style="font-size: medium"/>
+                    <b:label text="Seleccione la ubicación:" style="font-size: large" severity="warning"/>
                     <ui:include src="agregaPuesto/mapa.xhtml"/>
                 </b:panelGrid>
                 <h:form id="agregaPuesto" enctype="multipart/form-data"><br/>
@@ -30,6 +30,9 @@
                 </h:form>
             </b:panelGrid>
             <footer> <br/><p>© KLAN 2017</p> </footer>
+        </b:container>
+        <b:container rendered="#{!ingresoAdministrador.accedido()}">
+            <h3>Página no disponible</h3>
         </b:container>
     </h:body>
 </html>

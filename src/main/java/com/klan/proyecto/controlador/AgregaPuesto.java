@@ -27,7 +27,6 @@ import com.klan.proyecto.jpa.PuestoC;
 import com.klan.proyecto.modelo.Comida;
 import com.klan.proyecto.modelo.Puesto;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,6 @@ public class AgregaPuesto implements Serializable {
     private UploadedFile archivo;
     private Double latitud;
     private Double longitud;
-    private Puesto puesto;
 
     @PostConstruct
     public void cargar() {
@@ -65,6 +63,7 @@ public class AgregaPuesto implements Serializable {
         lista = new ArrayList<>(); 
         List<Comida> todas = new ComidaC(emf).buscaComidas();
         for (Comida c : todas) lista.add(c.getNombre());
+        
     }
 
     public List<String> getLista() {
@@ -137,32 +136,6 @@ public class AgregaPuesto implements Serializable {
         return marcador;
     }
 
-    public String getLat() {
-        return lat;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public String getLng() {
-        return lng;
-    }
-
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
-
-    public Puesto getPuesto() {
-        return puesto;
-    }
-
-    public void setPuesto(Puesto puesto) {
-        this.puesto = puesto;
-    }
-    
-    
-
     /**
      * Método que se encarga de avisar al usuario que la ubicación ya ha sido registrada.
      * @param event  Es el evento que se registra al tocar el mapa.
@@ -207,10 +180,8 @@ public class AgregaPuesto implements Serializable {
             try { // EL proceso de escritura en archivos puede lanzar excepciones.
                 File f = new File(dir + sub, rutaImagen); // Se define el Directorio y Nombre con extensión del file.
                 FileOutputStream output = new FileOutputStream(f); // Flujo de escritura para guardar la rutaImagen.
-                InputStream input = archivo.getInputstream(); // Flujo de lectura para cargar el archivo subido.
-                int read = 0; // Bandera para saber si se sigue leyendo bytes del archivo subido.
-                byte[] bytes = new byte[1024]; // Buffer para cargar bloques de 1024 bytes (1 MegaByte).
-                while ((read = input.read(bytes)) != -1) output.write(bytes, 0, read); // Se escribe el archivo con lo que se lee.
+                byte[] datos = archivo.getContents();
+                output.write(datos);
                 System.out.println("Imagen guardada en: " + sub + "/" + rutaImagen);
             } catch (Exception ex) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -219,7 +190,7 @@ public class AgregaPuesto implements Serializable {
                 return false;
             }
         } else {
-            rutaImagen = "default.jpg";
+            rutaImagen = "puesto.jpg";
             System.out.println("No se cargó imagen :(");
         } return true;
     }
@@ -254,5 +225,4 @@ public class AgregaPuesto implements Serializable {
             System.err.println("Error al agregar el puesto\n" + ex.getMessage());
         } return "agregaPuesto";
     }
-    
 }

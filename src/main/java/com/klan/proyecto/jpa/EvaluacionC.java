@@ -80,15 +80,15 @@ public class EvaluacionC implements Serializable {
             em.getTransaction().begin();
             // Se busca la referencia al puesto y usuario.
             Puesto puesto = em.getReference(
-            Puesto.class, id.getNombrePuesto());
+                Puesto.class, id.getNombrePuesto());
             Usuario usuario = em.getReference(
-            Usuario.class, id.getNombreUsuario());
+                Usuario.class, id.getNombreUsuario());
             // Se asegura que la llave primaria sea congruente.
             evaluacion.setPuesto(puesto);
             evaluacion.setUsuario(usuario);
             // Se verifica que las referencias no sean nulas.
             if (evaluacion.getPuesto() == null
-            || evaluacion.getUsuario() == null) {
+                || evaluacion.getUsuario() == null) {
                 // Se cierra la conexión antes de cancelar la inserción.
                 em.close();
                 throw new NullPointerException(
@@ -146,15 +146,15 @@ public class EvaluacionC implements Serializable {
             em.getTransaction().begin();
             // Se busca la referencia al puesto y usuario .
             Puesto puesto = em.getReference(
-            Puesto.class, id.getNombrePuesto());
+                Puesto.class, id.getNombrePuesto());
             Usuario usuario = em.getReference(
-            Usuario.class, id.getNombreUsuario());
+                Usuario.class, id.getNombreUsuario());
             // Se asegura que la llave primaria sea congruente.
             evaluacion.setPuesto(puesto);
             evaluacion.setUsuario(usuario);
             // Se verifica que las referencias no sean nulas.
             if (evaluacion.getPuesto() == null
-            || evaluacion.getUsuario() == null) {
+                || evaluacion.getUsuario() == null) {
                 // Se cierra la conexión antes de cancelar la inserción.
                 em.close();
                 throw new NullPointerException(
@@ -245,7 +245,7 @@ public class EvaluacionC implements Serializable {
      * insertadas en la BD.
      */
     public List<Evaluacion> buscaEvaluacions(
-    int maxResults, int firstResult) {
+        int maxResults, int firstResult) {
         return buscaEvaluacions(false, maxResults, firstResult);
     }
 

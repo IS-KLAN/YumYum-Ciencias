@@ -46,10 +46,6 @@ public class Contenido implements Serializable {
      * Obtiene información de la aplicación
      */
     private final FacesContext faceContext;
-    
-    private String descripcion;
-    private String rutaImagen;
-    
 
     /**
      * Constructor que inicializa las instancias de
@@ -68,8 +64,6 @@ public class Contenido implements Serializable {
      */
     @PostConstruct
     public void cargar() {
-        EntityManagerFactory emf = Persistence
-                .createEntityManagerFactory("YumYum-Ciencias");
         Puesto p = (Puesto) httpServletRequest.getSession()
                 .getAttribute("puesto");
         // Se inicializa con el puesto encontrado.
@@ -77,14 +71,6 @@ public class Contenido implements Serializable {
             return;
         }
         puesto = p;
-        
-         // Se construye la evaluación actual con sus atributos.
-        //Puesto actual = new PuestoC(emf).buscaNombre(puesto.getNombre());
-
-        // Se inicializa la última calificación asignada del usuario.
-        descripcion = (puesto != null) ? puesto.getDescripcion() : "";
-        rutaImagen = (puesto != null) ? puesto.getRutaImagen() : "";
-        
         // Se calcula la evaluación global del puesto.
         List<Evaluacion> evaluaciones = getPuesto().getEvaluaciones();
         if (evaluaciones != null && evaluaciones.size() > 0) {
@@ -95,7 +81,7 @@ public class Contenido implements Serializable {
             calificacionGlobal /= evaluaciones.size();
         }
     }
-    
+
     /**
      * Método de acceso al puesto elegido por el usuario.
      *
@@ -147,23 +133,23 @@ public class Contenido implements Serializable {
     public boolean contenidoDisponible() {
         return getPuesto() != null;
     }
-    
+
     /**
-     * Método que se encarga de capturar la evaluación
-     * ingresada en la interfaz.
+     * Método que se encarga de capturar la evaluación ingresada en la interfaz.
+     * @return Devuelve la página a la que se redirige.
      */
-    public void editarPuesto() {
+    public String editarPuesto() {
+        System.out.println("ENTRE A EDITAR");
         // Se realiza una conexión a la BD.
         EntityManagerFactory emf = Persistence
                 .createEntityManagerFactory("YumYum-Ciencias");
         // Se inicializa un C para realizar una consulta de evaluación.
         PuestoC controlador = new PuestoC(emf);
-  
+
         // Se construye la evaluación actual con sus atributos.
         Puesto actual = new Puesto(puesto.getNombre());
         try { // Se busca la existencia previa de una evaluación.
             Puesto encontrado = controlador.buscaNombre(puesto.getNombre());
-      
             if (encontrado != null) {
                 controlador.editar(actual);
             } else {
@@ -181,7 +167,7 @@ public class Contenido implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "CAMBIOS REALIZADOS.", null));
-        
-       
+        return "perfilPuesto?faces-redirect=true";
+
     }
 }

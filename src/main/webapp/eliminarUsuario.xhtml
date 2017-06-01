@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html  xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:h="http://java.sun.com/jsf/html"
-            xmlns:ui="http://java.sun.com/jsf/facelets"
-            xmlns:b="http://bootsfaces.net/ui">
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>YumYum CIencias</title>
+        <title>YumYum Ciencias - Elimina Usuario</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="author" content="KLAN"/>
         <meta charset="utf-8"/>
     </h:head>
     <h:body style="padding-top:70px">
+        <!-- Barra de navegación. -->
         <h:form>
-            <!-- Barra de navegación, mensajes de información y carrusel de puestos. -->
             <ui:include src="index/opciones.xhtml"/>
-            <b:messages/>
-            <ui:include src="index/carrusel.xhtml"/>
         </h:form>
-        <b:container>            
-            <footer> <p>© KLAN 2017</p> </footer>
+        <b:messages/>
+        <b:container rendered="#{ingresoAdministrador.accedido()}">
+            <h:form rendered="#{usuarioBorrado.usuarios().size()>0}">
+                <!-- Pestañas que muestran el contenido del puesto. -->
+                <b:dataTable value="#{usuarioBorrado.usuarios()}" var="u" select="true" searching="false" 
+                             border='false' paginated="false">
+                    <b:dataTableColumn value ="#{u.nombre}" order="asc" label="Nombre del usuario">
+                        <p:graphicImage value="resources/#{u.rutaImagen}" alt="YumYum-Ciencias" style="width: 30px; height: 30px; margin: 3px; float: left"/>
+                    </b:dataTableColumn>
+                    <b:dataTableColumn label="Borrarlo">
+                        <b:commandButton value="Eliminar" icon="glyphicon glyphicon-trash" 
+                                         action="#{usuarioBorrado.borrarUsuario(u)}"
+                                         onclick="return confirm('¿Estás seguro de borrar el usuario?');">
+                        </b:commandButton>
+                    </b:dataTableColumn>
+                </b:dataTable>
+            </h:form>          
+            <h:form rendered="#{usuarioBorrado.usuarios().size()==0}">
+                <h3> No hay usuarios que eliminar.</h3>
+            </h:form>
+            <footer> <br/><p>© KLAN 2017</p> </footer>
         </b:container>
+        <b:container rendered="#{!ingresoAdministrador.accedido()}">
+            <h3>Página no disponible.</h3>
+        </b:container>        
     </h:body>
 </html>

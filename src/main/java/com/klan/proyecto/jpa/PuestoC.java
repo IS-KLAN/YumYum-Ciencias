@@ -20,8 +20,6 @@ import com.klan.proyecto.modelo.Evaluacion;
 import com.klan.proyecto.modelo.Puesto;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
-import org.primefaces.model.UploadedFile;
 
 /**
  *Clase JPA para Crear, Modificar, y eliminar un puesto de la BD.
@@ -159,7 +157,7 @@ public class PuestoC implements Serializable {
             List<Evaluacion> evaluacionesNuevas = new ArrayList<Evaluacion>();
             for (Evaluacion evaluacion : evaluacionesNew) {
                 evaluacion = em.getReference(evaluacion.getClass(),
-                					evaluacion.getLlave());
+                										 evaluacion.getLlave());
                 evaluacionesNuevas.add(evaluacion);
             }
             evaluacionesNew = evaluacionesNuevas;
@@ -227,7 +225,7 @@ public class PuestoC implements Serializable {
                 puesto.getNombre();
             } catch (EntityNotFoundException enfe) {
                 throw new EntidadInexistenteException("No existe puesto con id "
-                						+ nombre, enfe);
+                											 + nombre, enfe);
             }
             List<String> mensajes = null;
             List<Evaluacion> consistencias = puesto.getEvaluaciones();
@@ -237,7 +235,7 @@ public class PuestoC implements Serializable {
                 }
                 mensajes.add("Puesto (" + puesto
                 + ") no puede destruirse porque no existe Evaluacion "
-                						+ evaluacion);
+                										+ evaluacion);
             }
             if (mensajes != null) {
                 throw new InconsistenciasException(mensajes);
@@ -351,50 +349,4 @@ public class PuestoC implements Serializable {
             em.close();
         }
     }
-    
-    public boolean actualizaDescripcion(Puesto puesto, String descripcion){
-               EntityManager em = null;
-        try {
-            em = getEntityManager();
-            Puesto persistentPuesto = em.find(Puesto.class, puesto.getNombre());
-            em.getTransaction().begin();
-            persistentPuesto.setDescripcion(descripcion);
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception ex) {
-            System.err.println("Error al actualizar descripcion"
-                    + " " + ex);
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-        return false;
-    }
-    
-    public boolean actualizaImagen(Puesto puesto, String rutaImagen, byte[] archivo){
-               EntityManager em = null;
-        try {
-            em = getEntityManager();
-            Puesto persistentPuesto = em.find(Puesto.class, puesto.getNombre());
-            em.getTransaction().begin();
-            
-            persistentPuesto.setRutaImagen(rutaImagen);
-            persistentPuesto.setDatos(archivo);
-            em.getTransaction().commit();
-            System.out.println(" cargo en la base");
-            
-            return true;
-        } catch (Exception ex) {
-            System.err.println("Error al actualizar descripcion"
-                    + " " + ex);
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-        return false;
-    }
-
-    
 }

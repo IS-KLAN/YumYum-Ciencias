@@ -18,8 +18,6 @@
                 <p:messages id="messages" autoUpdate="true" closable="true" />
                 <ui:include src="index/opciones.xhtml"/>
                 <h:panelGrid columns="2" cellpadding="5">
-                    <h:outputLabel value="Imagen de Perfil: " style="font-size: medium"/>
-                    <p:fileUpload id="up" label="Cargar" value="#{registro.archivo}" mode="simple" skinSimple="true" />
                     <h:outputLabel for="nombre" value="Nombre de usuario:" style="margin-left: 4%; font-size: medium"/>
                     <p:inputText value="#{registro.nombreUsuario}" placeholder="Nombre" required="true" id="nombre" size="15">
                         <p:keyFilter regEx="/[A-Za-z0-9_. ]/"/>
@@ -35,12 +33,14 @@
 
                     <h:outputLabel value="Contraseña" style="margin-left: 4%; font-size: medium"/>
                     <p:password value="#{registro.contraseña}" placeholder="Contraseña" required="true" feedback="true" id="contraseña" match="ccontraseña" promptLabel="Ingrese una contraseña" weakLabel="Débil" strongLabel="Fuerte" goodLabel="Bueno" validatorMessage="Las contraseñas no coinciden"/>
-                    
+
                     <h:outputLabel value="Confirmar contraseña" style="margin-left: 4%; font-size: medium"/>
                     <p:password value="#{registro.confirmaContraseña}" placeholder="Confirmar Contraseña" required="true" feedback="true" id="ccontraseña" promptLabel="Confirma contraseña" weakLabel="Débil" strongLabel="Fuerte" goodLabel="Bueno"/>
-                    
+
+                    <h:outputLabel value="Imagen de usuario: " style="margin-left: 4%; font-size: medium"/>
+                    <p:fileUpload label="Agregar imagen" value="#{registro.archivo}" mode="simple" skinSimple="true" />
                 </h:panelGrid>
-                <p:commandButton action="#{registro.registrar()}" value="Registrar"/>
+                <p:commandButton ajax="false" action="#{registro.registrar}" value="Registrar"/>
                 <p:commandButton value="Limpiar" update="miRegistro" process="@this"  ><p:resetInput target="miRegistro" /></p:commandButton>
             </h:form>
             <footer> <br/><p>© KLAN 2017</p> </footer>

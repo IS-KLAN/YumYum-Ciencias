@@ -12,21 +12,22 @@
         <meta charset="utf-8"/>
     </h:head>
     <h:body style="padding-top:70px">
+        <h:form>
+            <!-- Barra de navegación, mensajes de información y carrusel de puestos. -->
+            <ui:include src="index/opciones.xhtml"/>
+            <b:messages/>
+        </h:form>
         <b:container rendered="#{ingresoAdministrador.accedido()}">
             <h:form id="comida">
-                <!-- Barra de navegación, mensajes de información y carrusel de puestos. -->
-                <ui:include src="index/opciones.xhtml"/>
-                <b:messages/>
                 <h1>Agrega alimentos</h1>
                 <h:panelGrid columns="4" cellpadding="5">
                     <h:outputLabel for="nombre" value="Nombre:" style="font-weight:bold" />
                     <p:inputText id="nombre" value="#{agregaComida.nombre}" />
-                    <p:commandButton value="Agregar" icon="ui-icon-check" 
+                    <p:commandButton value="Agregar" icon="ui-icon-check"
                                      action="#{agregaComida.agregar()}" update="@all" process="@all"/>
                 </h:panelGrid>
             </h:form>
-
-            <h:form id="lista">
+            <h:form id="lista" rendered="#{agregaComida.comida().size()>0}">
                 <b:container>
                     <b:dataTable value="#{agregaComida.comida()}" var="c"  
                                  select="true" searching="false" border='false' 
@@ -41,9 +42,15 @@
                     </b:dataTable>
                 </b:container>
             </h:form>
+            <h:form rendered="#{agregaComida.comida().size()==0}">
+                <h3> No hay comidas registradas.</h3>
+            </h:form>
             <b:container>            
                 <footer> <p>© KLAN 2017</p> </footer>
             </b:container>
         </b:container>
+        <b:container rendered="#{!ingresoAdministrador.accedido()}">
+            <h3>Página no disponible.</h3>
+        </b:container>        
     </h:body>
 </html>

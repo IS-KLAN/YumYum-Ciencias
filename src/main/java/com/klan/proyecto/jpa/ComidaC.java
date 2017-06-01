@@ -49,7 +49,6 @@ public class ComidaC implements Serializable {
     /**
      * Método encargado de crear una nueva comida en la BD
      * @param comida - objeto comida que se creará
-     * @return boolean - true si se insertó a la BD, false en caso contrario.
      * @throws EntidadExistenteException - se lanza esta excepción cuando ya
      * existe una comida con el mismo nombre en la BD
      * @throws Exception error ocurrido durante la creación de la comida.
@@ -74,19 +73,17 @@ public class ComidaC implements Serializable {
                 PuestosPuesto = em.merge(PuestosPuesto);
             }
             em.getTransaction().commit();
-            //return true;
         }catch (Exception ex) {
           if (buscaNombre(comida.getNombre()) != null) {
-                System.out.println("Comida " + comida + " ya existe."+ ex);
+          throw new EntidadExistenteException(
+                  "Comida " + comida + " ya existe.", ex);
           }
-
-          //return false;
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
             }
         }
-        
     }
 
     /**

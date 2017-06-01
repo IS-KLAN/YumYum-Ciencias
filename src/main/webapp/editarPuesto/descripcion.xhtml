@@ -1,21 +1,27 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:ui="http://java.sun.com/jsf/facelets"
-            xmlns:h="http://java.sun.com/jsf/html"
-            xmlns:b="http://bootsfaces.net/ui"
-            xmlns:p="http://primefaces.org/ui"
-            xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:panelGrid style="margin: 6px" >
-            <h:outputLabel value="Si deseas editar la descripción actual, escribe sobre el campo" ></h:outputLabel> 
-            <b:inputTextarea id="nuevaDescripcion" value="#{modificacionPuesto.descripcion}"
+       xmlns:ui="http://java.sun.com/jsf/facelets"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:p="http://primefaces.org/ui">
+    <h:panelGrid style="margin: 5px" >
+        <h:outputLabel value="Si deseas editar la descripción actual, escribe sobre el campo" style="font-size: medium" ></h:outputLabel> 
+        <b:inputTextarea id="nuevaDescripcion" value="#{modificacionPuesto.descripcion}"
                          placeholder="#{contenido.puesto.descripcion}" 
-                         rows="4"/>
-            <b:commandButton look="primary" size="md" value="Guardar cambios" icon="edit" 
-                            action="#{modificacionPuesto.cambiarDescripcion()}">
-            </b:commandButton>
-      
+                         rows="2"/>
+        <b:commandButton look="primary" size="md" value="Guardar descripción" icon="edit" 
+                         action="#{modificacionPuesto.cambiarDescripcion()}">
+        </b:commandButton>      
     </h:panelGrid>
     <b:panelGrid columns="2">
-        <p:graphicImage value="resources/#{contenido.puesto.rutaImagen}" alt="YumYum-Ciencias" style="width: 100%; height: 320px"/>
+        <h:panelGrid columns="1">
+            <p:graphicImage value="resources/#{contenido.puesto.rutaImagen}" alt="YumYum-Ciencias" style="width: 100%; height: 320px"/>
+            <b:panelGrid columns="2">
+                <p:fileUpload label="Cargar nueva imagen" value="#{modificacionPuesto.archivo}" mode="simple" skinSimple="true" />
+                <b:commandButton look="primary" size="md" value="Guardar imagen" icon="edit" ajax="false" 
+                                 action="#{modificacionPuesto.cambiarImagen}" style="float: right">
+                </b:commandButton>      
+            </b:panelGrid>
+        </h:panelGrid>
         <b:label text="Ubicación:" style="font-size: large"><ui:include src="mapa.xhtml"/></b:label>
     </b:panelGrid>
 </html>
