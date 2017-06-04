@@ -82,34 +82,51 @@ create table if not exists comida_puesto (
 -- Se inserta el administrador por defecto.
 INSERT INTO administrador (nombre_administrador, contraseña) VALUES('admin', 'passwordAdmin');
 
--- Se insertan comidas de prueba.
-INSERT INTO comida (nombre_comida) VALUES('BOLLOS');
-INSERT INTO comida (nombre_comida) VALUES('BURRITOS');
-INSERT INTO comida (nombre_comida) VALUES('CREPAS');
-INSERT INTO comida (nombre_comida) VALUES('CHILAQUILES');
-INSERT INTO comida (nombre_comida) VALUES('DONAS');
-INSERT INTO comida (nombre_comida) VALUES('ENCHILADAS');
-INSERT INTO comida (nombre_comida) VALUES('FLAUTAS');
-INSERT INTO comida (nombre_comida) VALUES('GORDITAS');
-INSERT INTO comida (nombre_comida) VALUES('HAMBURGUESAS');
-INSERT INTO comida (nombre_comida) VALUES('HELADO');
-INSERT INTO comida (nombre_comida) VALUES('HOT-DOGS');
-INSERT INTO comida (nombre_comida) VALUES('HUARACHES');
+-- ALIMENTOS
 INSERT INTO comida (nombre_comida) VALUES('MOLLETES');
-INSERT INTO comida (nombre_comida) VALUES('NACHOS');
-INSERT INTO comida (nombre_comida) VALUES('PAY');
-INSERT INTO comida (nombre_comida) VALUES('PIZZA');
-INSERT INTO comida (nombre_comida) VALUES('PAMBAZOS');
-INSERT INTO comida (nombre_comida) VALUES('QUESADILLAS');
-INSERT INTO comida (nombre_comida) VALUES('SINCORNIZADAS');
-INSERT INTO comida (nombre_comida) VALUES('SANDWICHES');
-INSERT INTO comida (nombre_comida) VALUES('TACOS DORADOS');
-INSERT INTO comida (nombre_comida) VALUES('TACOS DE GUISADO');
-INSERT INTO comida (nombre_comida) VALUES('TORTAS');
 INSERT INTO comida (nombre_comida) VALUES('TOSTADAS');
--- Bebidas a partir de id 20.
+INSERT INTO comida (nombre_comida) VALUES('TACOS DE GUISADO');
+INSERT INTO comida (nombre_comida) VALUES('CHILAQUILES');
+INSERT INTO comida (nombre_comida) VALUES('POZOLE');
+INSERT INTO comida (nombre_comida) VALUES('TORTAS');
+INSERT INTO comida (nombre_comida) VALUES('GRINGAS/SINCRONIZADAS');
+INSERT INTO comida (nombre_comida) VALUES('BURRITOS');
+INSERT INTO comida (nombre_comida) VALUES('QUESADILLAS');
+INSERT INTO comida (nombre_comida) VALUES('GORDITAS');
+INSERT INTO comida (nombre_comida) VALUES('HUARACHES/SOPES');
+INSERT INTO comida (nombre_comida) VALUES('ENCHILADAS');
+INSERT INTO comida (nombre_comida) VALUES('PAMBAZOS');
+INSERT INTO comida (nombre_comida) VALUES('TACOS DORADOS/FLAUTAS');
+INSERT INTO comida (nombre_comida) VALUES('PIZZA');
+INSERT INTO comida (nombre_comida) VALUES('ENSALADAS');
+INSERT INTO comida (nombre_comida) VALUES('BOLLOS');
+INSERT INTO comida (nombre_comida) VALUES('BAGUETTE/CHAPATAS');
+INSERT INTO comida (nombre_comida) VALUES('SANDWICHES/CUERNITOS');
+INSERT INTO comida (nombre_comida) VALUES('CÓCTEL DE FRUTAS');
+INSERT INTO comida (nombre_comida) VALUES('HAMBURGUESAS');
+INSERT INTO comida (nombre_comida) VALUES('HOTDOG');
+INSERT INTO comida (nombre_comida) VALUES('EMPANADAS');
+INSERT INTO comida (nombre_comida) VALUES('ALAMBRE');
+INSERT INTO comida (nombre_comida) VALUES('PASTAS');
+INSERT INTO comida (nombre_comida) VALUES('HUEVOS AL GUSTO');
+INSERT INTO comida (nombre_comida) VALUES('TLACOYOS');
+INSERT INTO comida (nombre_comida) VALUES('COMIDA CORRIDA');
+INSERT INTO comida (nombre_comida) VALUES('COMIDA CHINA');
+
+-- BEBIDAS
+INSERT INTO comida (nombre_comida) VALUES('REFRESCOS');
+INSERT INTO comida (nombre_comida) VALUES('JUGOS');
 INSERT INTO comida (nombre_comida) VALUES('AGUA DE SABOR');
-INSERT INTO comida (nombre_comida) VALUES('JUGO');
-INSERT INTO comida (nombre_comida) VALUES('REFRESCO');
 INSERT INTO comida (nombre_comida) VALUES('CAFÉ');
-INSERT INTO comida (nombre_comida) VALUES('LICUADO');
+INSERT INTO comida (nombre_comida) VALUES('ATOLE');
+INSERT INTO comida (nombre_comida) VALUES('LICUADOS');
+INSERT INTO comida (nombre_comida) VALUES('TÉ');
+
+-- POSTRES
+INSERT INTO comida (nombre_comida) VALUES('DULCES');
+INSERT INTO comida (nombre_comida) VALUES('ALITAS');
+INSERT INTO comida (nombre_comida) VALUES('BANDERILLAS');
+INSERT INTO comida (nombre_comida) VALUES('PAPAS A LA FRANCESA');
+INSERT INTO comida (nombre_comida) VALUES('NACHOS');
+INSERT INTO comida (nombre_comida) VALUES('POSTRES');
+INSERT INTO comida (nombre_comida) VALUES('HELADOS Y NIEVES');

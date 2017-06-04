@@ -17,7 +17,7 @@
             <ui:include src="index/opciones.xhtml"/>
         </h:form>
         <!-- Barra de navegación. -->
-        <b:container>
+        <b:container rendered="#{!ingresoAdministrador.accedido()}">
             <h:form styleClass="form-signin" prependId="false">
                 <h3 class="form-signin-heading" align="center">Ingresar datos:</h3>
                 <b:messages/>
@@ -34,6 +34,9 @@
                 <b:commandButton look="primary btn-block" value="Capturar datos" icon="log-in" size="lg" action="#{ingresoAdministrador.ingresar()}"/>
             </h:form>
             <footer><br/><p>© KLAN 2017</p> </footer>
+        </b:container>
+        <b:container rendered="#{ingresoAdministrador.accedido()}">
+            <h3>Ya se ha iniciado la sesión.</h3>
         </b:container>
     </h:body>
 </html>

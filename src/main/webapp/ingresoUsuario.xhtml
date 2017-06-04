@@ -2,10 +2,10 @@
 <!DOCTYPE html>
 <!-- Ligas de componentes xhtml que se usan. -->
 <html  xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:ui="http://java.sun.com/jsf/facelets"            
-            xmlns:h="http://java.sun.com/jsf/html"
-            xmlns:f="http://java.sun.com/jsf/core"
-            xmlns:b="http://bootsfaces.net/ui">
+       xmlns:ui="http://java.sun.com/jsf/facelets"            
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:f="http://java.sun.com/jsf/core"
+       xmlns:b="http://bootsfaces.net/ui">
     <h:head>
         <title>YumYum CIencias - Iniciar Sesión</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -18,7 +18,7 @@
             <ui:include src="index/opciones.xhtml"/>
         </h:form>
         <!-- Panel responsivo. -->
-        <b:container>
+        <b:container rendered="#{!ingresoUsuario.accedido()}">
             <h:form styleClass="form-signin" prependId="false">
                 <h3 class="form-signin-heading">Ingresar datos:</h3>
                 <b:messages/>
@@ -34,12 +34,15 @@
                             <b:iconAwesome name="key"/>
                         </f:facet>
                     </b:inputText>
-                    <h:panelGrid style="margin-left: 4%"><b:selectBooleanCheckbox value="true" caption="Recordar correo"/></h:panelGrid>
+                    <h:panelGrid style="margin-left: 4%"><b:selectBooleanCheckbox value="true" caption="Recordar"/></h:panelGrid>
                     <b:commandButton look="primary btn-block" value="Capturar datos" icon="log-in" size="lg" action="#{ingresoUsuario.ingresar()}">
                     </b:commandButton>
                 </h:panelGrid>
             </h:form>
             <footer><br/><p>© KLAN 2017</p> </footer>
+        </b:container>
+        <b:container rendered="#{ingresoUsuario.accedido()}">
+            <h3>Ya se ha iniciado la sesión.</h3>
         </b:container>
     </h:body>
 </html>

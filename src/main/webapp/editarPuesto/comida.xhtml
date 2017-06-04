@@ -1,17 +1,38 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
-            xmlns:h="http://java.sun.com/jsf/html"
-            xmlns:b="http://bootsfaces.net/ui"
-            xmlns:p="http://primefaces.org/ui">
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:f="http://java.sun.com/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
     <!-- Si hay comida se despliega la tabla de evaluaciones. -->
-    <h:form rendered="#{contenido.comidaDisponible()}">
-        <p:dataScroller value="#{contenido.puesto.comidas}" var="c" chunkSize="15" mode="inline" scrollHeight="350">
-            <b:panelGrid columns="1" style="margin-top: 10px">
-                    <b:label severity="primary" tiny-screen="one-fourth" text="#{c.nombre}" style="font-size: larger; width: 100%"/>
-            </b:panelGrid>
-        </p:dataScroller>
+    <h:form>
+        <h:panelGrid columns="1" rendered="#{modificacionPuesto.comidas.size() != 0}">
+            <h:outputLabel for="multiple" value="¿Deseas agregar más comida?"
+                           style="font-size: medium"/>
+            <h:panelGrid columns="2">
+                <p:selectCheckboxMenu id="multiple" value="#{modificacionPuesto.seleccion}" 
+                                      label="Selecciona aquí" filter="true" 
+                                      filterMatchMode="startsWith" 
+                                      panelStyle="width:250px" style="margin: 5px" >
+                    <f:selectItems value="#{modificacionPuesto.getComidas()}"/>
+                </p:selectCheckboxMenu>
+                <b:commandButton look="primary" size="md" value="Guardar cambios" icon="ok" 
+                                 action="#{modificacionPuesto.agregaNuevaComida()}">
+                </b:commandButton>
+            </h:panelGrid>
+        </h:panelGrid>
+        <b:dataTable value="#{contenido.puesto.comidas}" var="c"  select="true" searching="false" style="font-size: medium" 
+                     border='false' paginated="false" rendered="#{contenido.comidaDisponible()}" customOptions="info:false">
+            <b:dataTableColumn value ="#{c.nombre}" order="asc" label="Comida actual"/>
+            <b:dataTableColumn label="Eliminar">
+                <b:commandButton value="Eliminar" icon="glyphicon glyphicon-trash" 
+                                 action="#{modificacionPuesto.borrarComida(c)}"
+                                 onclick="return confirm('¿Estás seguro de borrar la comida?');">
+                </b:commandButton>
+            </b:dataTableColumn>
+        </b:dataTable>
     </h:form>
     <!-- Si no hay comida se avisa que no hay contenido disponible -->
     <h:form rendered="#{!contenido.comidaDisponible()}">
-        <h:outputLabel value="No hay contenido disponible. :(" style="margin: 12px"/>
+        <h3>No hay contenido disponible.</h3>
     </h:form>
 </html>

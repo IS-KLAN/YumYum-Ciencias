@@ -27,7 +27,6 @@ import com.klan.proyecto.jpa.PuestoC;
 import com.klan.proyecto.modelo.Comida;
 import com.klan.proyecto.modelo.Puesto;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +63,7 @@ public class AgregaPuesto implements Serializable {
         lista = new ArrayList<>(); 
         List<Comida> todas = new ComidaC(emf).buscaComidas();
         for (Comida c : todas) lista.add(c.getNombre());
+        
     }
 
     public List<String> getLista() {
@@ -180,10 +180,8 @@ public class AgregaPuesto implements Serializable {
             try { // EL proceso de escritura en archivos puede lanzar excepciones.
                 File f = new File(dir + sub, rutaImagen); // Se define el Directorio y Nombre con extensión del file.
                 FileOutputStream output = new FileOutputStream(f); // Flujo de escritura para guardar la rutaImagen.
-                InputStream input = archivo.getInputstream(); // Flujo de lectura para cargar el archivo subido.
-                int read = 0; // Bandera para saber si se sigue leyendo bytes del archivo subido.
-                byte[] bytes = new byte[1024]; // Buffer para cargar bloques de 1024 bytes (1 MegaByte).
-                while ((read = input.read(bytes)) != -1) output.write(bytes, 0, read); // Se escribe el archivo con lo que se lee.
+                byte[] datos = archivo.getContents();
+                output.write(datos);
                 System.out.println("Imagen guardada en: " + sub + "/" + rutaImagen);
             } catch (Exception ex) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
@@ -192,7 +190,7 @@ public class AgregaPuesto implements Serializable {
                 return false;
             }
         } else {
-            rutaImagen = "default.jpg";
+            rutaImagen = "puesto.jpg";
             System.out.println("No se cargó imagen :(");
         } return true;
     }

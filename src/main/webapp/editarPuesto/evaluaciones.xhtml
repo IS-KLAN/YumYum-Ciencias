@@ -2,32 +2,31 @@
        xmlns:h="http://java.sun.com/jsf/html"
        xmlns:p="http://primefaces.org/ui"
        xmlns:b="http://bootsfaces.net/ui">
-    <style type="text/css"> .ui-growl { right: 10%; top: 10%; } </style>
     <h:form>
-        <p:growl id="growl" showDetail="true" showSummary="true" sticky="true" autoUpdate="true"/>
-        <h:panelGrid id="datos">
+        <b:panelGrid id="datos" columns="1" style="font-size: medium">
             <!-- Si hay evaluaciones se despliega la tabla de evaluaciones. -->
             <h:form rendered="#{contenido.evaluacionesDisponibles()}">
-                <p:dataTable value="#{contenido.puesto.evaluaciones}" var="e"
-                             scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="320">
-                    <p:column>
-                        <b:icon name="user" style="padding: 6px" size="lg"/>
-                        <b:label text="#{e.usuario.nombre}" style="font-size: medium"/>
-                        <p:rating style="margin: 5px" value="#{e.calificacion}" stars="5" readonly="true" /><br/>
-                        <h:outputText value=" #{e.comentario}" style="font-size: medium"/>
-                    </p:column>
-                    <p:column>
+                <b:dataTable value="#{contenido.puesto.evaluaciones}" var="e"  select="true" searching="false"
+                             border='false' paginated="false" customOptions="info:false">
+                    <b:dataTableColumn value ="#{e.usuario.nombre}" order="asc" label="Usuario">
+                        <p:graphicImage value="resources/#{e.usuario.rutaImagen}" alt="YumYum-Ciencias" style="width: 30px; height: 30px; margin: 3px; float: left"/>
+                    </b:dataTableColumn>
+                    <b:dataTableColumn label="Calificación">
+                        <p:rating style="margin: 5px" value="#{e.calificacion}" stars="5" readonly="true" />
+                    </b:dataTableColumn>
+                    <b:dataTableColumn value="#{e.comentario}" label="Comentario"/>
+                    <b:dataTableColumn label="Eliminar comentario">
                         <b:commandButton value="Eliminar" look="danger" icon="remove" size="md"
                                          actionListener="#{evaluador.eliminarComentario(e)}" update="@this" process="@this"
                                          oncomplete="carga()" />
-                    </p:column>
-                </p:dataTable>
+                    </b:dataTableColumn>
+                </b:dataTable>
             </h:form>
             <!-- Si no hay evaluaciones se avisa que no hay contenido disponible -->
             <h:form rendered="#{!contenido.evaluacionesDisponibles()}">
-                <h:outputLabel value="No hay contenido disponible. :(" style="margin: 12px"/>
+                <h3> No hay contenido disponible.</h3>
             </h:form>
-        </h:panelGrid>
-        <b:remoteCommand name="carga" actionListener="#{contenido.cargar()}" update="datos" process="@this"/>
+        </b:panelGrid>
+        <b:remoteCommand name="carga" actionListener="#{contenido.cargar}" update="datos" process="@this"/>
     </h:form>
 </html>

@@ -7,7 +7,7 @@
     <style type="text/css"> .ui-growl { right: 10%; top: 10%; } </style>
     <!-- Se muestran las evaluaciones  y la opción de comentar si está disponible. -->
     <h:form rendered="#{ingresoUsuario.accedido()}">
-        <h:panelGrid id="datos">
+        <h:panelGrid columns="1" id="datos" width="100%" style="font-size: medium">
             <p:growl id="growl" showDetail="true" showSummary="true" sticky="true"/>
             <ui:include src="evaluaciones.xhtml"></ui:include>
         </h:panelGrid>
@@ -26,7 +26,7 @@
     </h:form>
     <!-- Se muestran sólo las evaluaciones si se trata de un invitado. -->
     <h:form rendered="#{!ingresoUsuario.accedido()}">
-        <h:panelGrid id="sinEvaluaciones">
+        <h:panelGrid columns="1" id="invitado" width="100%" style="font-size: medium">
             <ui:include src="evaluaciones.xhtml"></ui:include>
         </h:panelGrid>
     </h:form>

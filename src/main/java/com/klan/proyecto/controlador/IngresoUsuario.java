@@ -96,6 +96,8 @@ public class IngresoUsuario implements Serializable{
             faceContext.addMessage(null, message);
             // Se asegura que el mensaje se muestre después de la redirección.
             faceContext.getExternalContext().getFlash().setKeepMessages(true);
+            if (httpServletRequest.getSession().getAttribute("administrador") != null)
+                httpServletRequest.getSession().removeAttribute("administrador");
             return "index?faces-redirect=true";
         } Pendiente posible = new PendienteC(emf).buscaCorreo(correo);
         if (posible != null) {
@@ -125,10 +127,19 @@ public class IngresoUsuario implements Serializable{
     }
 
     /**
+     * Método que indica el nombre de la imagen del usuario que se encuentre activo.
+     * @return Devuelve la ruta de la imagen de usuario activo o NULL en otro caso.
+     */
+    public String imagenUsuario() {
+        Usuario u = ((Usuario)httpServletRequest.getSession().getAttribute("usuario"));
+        return (u != null)? u.getRutaImagen(): null;
+    }
+
+    /**
      * Método que indica el nombre del usuario que se encuentre activo.
      * @return Devuelve el nombre del usuario activo o NULL en otro caso.
      */
-    public String usuarioActivo() {
+    public String nombreUsuario() {
         Usuario u = ((Usuario)httpServletRequest.getSession().getAttribute("usuario"));
         return (u != null)? u.getNombre() : null;
     }
