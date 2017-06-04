@@ -7,7 +7,7 @@
             <!-- Si hay evaluaciones se despliega la tabla de evaluaciones. -->
             <h:form rendered="#{contenido.evaluacionesDisponibles()}">
                 <b:dataTable value="#{contenido.puesto.evaluaciones}" var="e"  select="true" searching="false"
-                             border='false' paginated="false" >
+                             border='false' paginated="false" customOptions="info:false">
                     <b:dataTableColumn value ="#{e.usuario.nombre}" order="asc" label="Usuario">
                         <p:graphicImage value="resources/#{e.usuario.rutaImagen}" alt="YumYum-Ciencias" style="width: 30px; height: 30px; margin: 3px; float: left"/>
                     </b:dataTableColumn>
@@ -27,6 +27,6 @@
                 <h3> No hay contenido disponible.</h3>
             </h:form>
         </b:panelGrid>
-        <b:remoteCommand name="carga" actionListener="#{contenido.cargar()}" update="datos" process="@this"/>
+        <b:remoteCommand name="carga" actionListener="#{contenido.cargar}" update="datos" process="@this"/>
     </h:form>
 </html>

@@ -21,7 +21,7 @@
             <h:form rendered="#{usuarioBorrado.usuarios().size()>0}">
                 <!-- Pestañas que muestran el contenido del puesto. -->
                 <b:dataTable value="#{usuarioBorrado.usuarios()}" var="u" select="true" searching="false" 
-                             border='false' paginated="false">
+                             border='false' paginated="false" customOptions="info:false">
                     <b:dataTableColumn value ="#{u.nombre}" order="asc" label="Nombre del usuario">
                         <p:graphicImage value="resources/#{u.rutaImagen}" alt="YumYum-Ciencias" style="width: 30px; height: 30px; margin: 3px; float: left"/>
                     </b:dataTableColumn>

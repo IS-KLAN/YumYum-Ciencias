@@ -5,7 +5,6 @@
  */
 package com.klan.proyecto.controlador;
 
-import com.klan.proyecto.jpa.PuestoC;
 import com.klan.proyecto.modelo.Puesto; // Para construir un puesto.
 import com.klan.proyecto.modelo.Evaluacion; // Para construir evaluaciones.
 
@@ -17,8 +16,6 @@ import javax.faces.context.FacesContext; // Para conocer el contexto.
 import javax.servlet.http.HttpServletRequest; // Para manejar datos guardados.
 import java.io.Serializable; // Para conservar la persistencia de objetos.
 import javax.faces.application.FacesMessage;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 /**
  * Clase bean que implementa la evaluación de un puesto y la
@@ -132,42 +129,5 @@ public class Contenido implements Serializable {
      */
     public boolean contenidoDisponible() {
         return getPuesto() != null;
-    }
-
-    /**
-     * Método que se encarga de capturar la evaluación ingresada en la interfaz.
-     * @return Devuelve la página a la que se redirige.
-     */
-    public String editarPuesto() {
-        System.out.println("ENTRE A EDITAR");
-        // Se realiza una conexión a la BD.
-        EntityManagerFactory emf = Persistence
-                .createEntityManagerFactory("YumYum-Ciencias");
-        // Se inicializa un C para realizar una consulta de evaluación.
-        PuestoC controlador = new PuestoC(emf);
-
-        // Se construye la evaluación actual con sus atributos.
-        Puesto actual = new Puesto(puesto.getNombre());
-        try { // Se busca la existencia previa de una evaluación.
-            Puesto encontrado = controlador.buscaNombre(puesto.getNombre());
-            if (encontrado != null) {
-                controlador.editar(actual);
-            } else {
-                controlador.crear(actual);
-            } // Se actualiza el contenido del puesto.
-            puesto = new PuestoC(emf).buscaNombre(puesto.getNombre());
-            httpServletRequest.getSession().setAttribute("puesto", puesto);
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Error al guardar el CAMBIOS:"
-                            + actual.toString(), ex.getMessage()));
-        } // Si no ocurre una excepción se avisa al usuario.
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "CAMBIOS REALIZADOS.", null));
-        return "perfilPuesto?faces-redirect=true";
-
     }
 }

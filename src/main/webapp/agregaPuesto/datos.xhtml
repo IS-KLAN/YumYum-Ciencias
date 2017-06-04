@@ -5,8 +5,9 @@
        xmlns:p="http://primefaces.org/ui">
     <b:panelGrid columns="3">
         <h:outputLabel for="nombre" value="Nombre del puesto:" style="font-size: medium"/>
-        <p:inputText id="nombre" value="#{agregaPuesto.nombre}" required="true" label="Nombre" style="font-size: medium" size="38">
-            <p:keyFilter regEx="/[A-Za-z0-9_. ]/"/>
+        <p:inputText id="nombre" value="#{agregaPuesto.nombre}" required="true" label="Nombre" style="font-size: medium" size="38"
+                     title="Utilizar letras, números, espacios, puntos o guiones.">
+            <p:keyFilter regEx="/[A-Za-z0-9_. áéíóúÁÉÍÓÚ:-()]/"/>
         </p:inputText>
         <br style="font-size: x-large;"/>
         <h:outputLabel for="descrip" value="Descripcion:"  style="font-size: medium"/>

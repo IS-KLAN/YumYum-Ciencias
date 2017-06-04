@@ -5,7 +5,7 @@
     <!-- Si hay evaluaciones se despliega la tabla de evaluaciones. -->
     <h:form rendered="#{contenido.evaluacionesDisponibles()}">
         <b:dataTable value="#{contenido.puesto.evaluaciones}" var="e"  select="true" searching="false"
-                     border='false' paginated="false" >
+                     border='false' paginated="false" customOptions="info:false">
             <b:dataTableColumn value ="#{e.usuario.nombre}" order="asc" label="Usuario">
                 <p:graphicImage value="resources/#{e.usuario.rutaImagen}" alt="YumYum-Ciencias" style="width: 30px; height: 30px; margin: 3px; float: left"/>
             </b:dataTableColumn>
@@ -17,6 +17,6 @@
     </h:form>
     <!-- Si no hay evaluaciones se avisa que no hay contenido disponible -->
     <h:form rendered="#{!contenido.evaluacionesDisponibles()}">
-        <h3> No hay contenido disponible.</h3>
+        <h3>No hay contenido disponible.</h3>
     </h:form>
 </html>

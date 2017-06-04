@@ -17,21 +17,19 @@
             <ui:include src="index/opciones.xhtml"/>
             <b:messages/>
         </h:form>
-        <b:container rendered="#{ingresoAdministrador.accedido()}">
-            <h:form id="comida">
+        <b:container rendered="#{ingresoAdministrador.accedido()}" style="font-size: medium">
+            <h:form id="lista">
                 <h1>Agrega alimentos</h1>
                 <h:panelGrid columns="4" cellpadding="5">
                     <h:outputLabel for="nombre" value="Nombre:" style="font-weight:bold" />
                     <p:inputText id="nombre" value="#{agregaComida.nombre}" />
                     <p:commandButton value="Agregar" icon="ui-icon-check"
-                                     action="#{agregaComida.agregar()}" update="@all" process="@all"/>
+                                     action="#{agregaComida.agregar()}" update="@form" process="@all"/>
                 </h:panelGrid>
-            </h:form>
-            <h:form id="lista" rendered="#{agregaComida.comida().size()>0}">
-                <b:container>
+                <b:container rendered="#{agregaComida.comida().size()>0}">
                     <b:dataTable value="#{agregaComida.comida()}" var="c"  
                                  select="true" searching="false" border='false' 
-                                 paginated="false" >
+                                 paginated="false" customOptions="info:false">
                         <b:dataTableColumn value ="#{c.nombre}" order="asc" label="Comidas"/>
                         <b:dataTableColumn label="Opciones">
                             <b:commandButton value="Eliminar" icon="glyphicon glyphicon-trash" 

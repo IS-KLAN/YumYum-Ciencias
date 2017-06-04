@@ -1,15 +1,15 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:b="http://bootsfaces.net/ui">
+            xmlns:h="http://java.sun.com/jsf/html"
+            xmlns:b="http://bootsfaces.net/ui">
     <!-- Si hay comida se despliega la tabla de evaluaciones. -->
     <h:form rendered="#{contenido.comidaDisponible()}">
         <b:dataTable value="#{contenido.puesto.comidas}" var="c"  select="true" searching="false" 
-                            border='false' paginated="false" >
-                    <b:dataTableColumn value ="#{c.nombre}" order="asc" label="Comidas"/>
+                     border='false' paginated="false" style="font-size: medium" customOptions="info:false">
+            <b:dataTableColumn value ="#{c.nombre}" order="asc" label="Nombre de la comida"/>
         </b:dataTable>        
     </h:form>
     <!-- Si no hay comida se avisa que no hay contenido disponible -->
     <h:form rendered="#{!contenido.comidaDisponible()}">
-        <h3> No hay contenido disponible.</h3>
+        <h3>No hay contenido disponible.</h3>
     </h:form>
 </html>

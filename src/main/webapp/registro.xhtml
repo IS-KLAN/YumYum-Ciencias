@@ -19,23 +19,29 @@
                 <ui:include src="index/opciones.xhtml"/>
                 <h:panelGrid columns="2" cellpadding="5">
                     <h:outputLabel for="nombre" value="Nombre de usuario:" style="margin-left: 4%; font-size: medium"/>
-                    <p:inputText value="#{registro.nombreUsuario}" placeholder="Nombre" required="true" id="nombre" size="15">
-                        <p:keyFilter regEx="/[A-Za-z0-9_. ]/"/>
+                    <p:inputText value="#{registro.nombreUsuario}" placeholder="Nombre" required="true" id="nombre" size="17"
+                                 title="Utilizar letras, números, espacios, puntos o guiones.">
+                        <p:keyFilter regEx="/[A-Za-z0-9_. áéíóúÁÉÍÓÚ:-]/"/>
                     </p:inputText>
 
                     <h:outputLabel for="correo" value="Correo:" style="margin-left: 4%; font-size: medium"/>
                     <h:panelGrid columns="2" cellpadding="5">
-                        <p:inputText value="#{registro.correo}" placeholder="Correo" required="true" id="correo" size="20">
+                        <p:inputText value="#{registro.correo}" placeholder="Correo" required="true" id="correo" size="17"
+                                     title="Utilizar letras, números, puntos o guiones bajos.">
                             <p:keyFilter regEx="/[A-Za-z0-9_.]/"/>
                         </p:inputText>
                         <h:outputLabel value="@ciencias.unam.mx" style="margin-left: 4%; font-size: medium"/>
                     </h:panelGrid>
 
                     <h:outputLabel value="Contraseña" style="margin-left: 4%; font-size: medium"/>
-                    <p:password value="#{registro.contraseña}" placeholder="Contraseña" required="true" feedback="true" id="contraseña" match="ccontraseña" promptLabel="Ingrese una contraseña" weakLabel="Débil" strongLabel="Fuerte" goodLabel="Bueno" validatorMessage="Las contraseñas no coinciden"/>
+                    <p:password value="#{registro.contraseña}" placeholder="Contraseña" required="true" size="17"
+                                feedback="true" id="contraseña" match="ccontraseña" promptLabel="Ingrese una contraseña"
+                                weakLabel="Débil" strongLabel="Fuerte" goodLabel="Bueno" validatorMessage="Las contraseñas no coinciden"/>
 
                     <h:outputLabel value="Confirmar contraseña" style="margin-left: 4%; font-size: medium"/>
-                    <p:password value="#{registro.confirmaContraseña}" placeholder="Confirmar Contraseña" required="true" feedback="true" id="ccontraseña" promptLabel="Confirma contraseña" weakLabel="Débil" strongLabel="Fuerte" goodLabel="Bueno"/>
+                    <p:password value="#{registro.confirmaContraseña}" placeholder="Confirmar Contraseña" size="17"
+                                required="true" feedback="true" id="ccontraseña" promptLabel="Confirma contraseña"
+                                weakLabel="Débil" strongLabel="Fuerte" goodLabel="Bueno"/>
 
                     <h:outputLabel value="Imagen de usuario: " style="margin-left: 4%; font-size: medium"/>
                     <p:fileUpload label="Agregar imagen" value="#{registro.archivo}" mode="simple" skinSimple="true" />
