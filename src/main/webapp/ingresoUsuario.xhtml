@@ -5,7 +5,8 @@
        xmlns:ui="http://java.sun.com/jsf/facelets"            
        xmlns:h="http://java.sun.com/jsf/html"
        xmlns:f="http://java.sun.com/jsf/core"
-       xmlns:b="http://bootsfaces.net/ui">
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>YumYum CIencias - Iniciar Sesión</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -23,7 +24,9 @@
                 <h3 class="form-signin-heading">Ingresar datos:</h3>
                 <b:messages/>
                 <h:panelGrid columns="2" width="90%">
-                    <b:inputText id="correo" placeholder="Correo" value="#{ingresoUsuario.correo}">
+                    <b:inputText id="correo" placeholder="Correo" value="#{ingresoUsuario.correo}"
+                                 title="Utilizar letras, números, puntos o guiones bajos.">
+                        <p:keyFilter regEx="/[A-Za-z0-9_.]/"/>
                         <f:facet name="prepend">
                             <b:iconAwesome name="user"/>
                         </f:facet>
