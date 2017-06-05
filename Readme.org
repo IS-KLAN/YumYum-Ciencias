@@ -1,0 +1,57 @@
+
+Preparando la base de datos
+
+En un comienzo, se crea la base de datos dentro de mysql:
+>create database yumyum_ciencias;
+
+Posteriormente, se deberá crear un usuario klan con contraseña
+password, el cual contará con todos los privilegios. Para esto,
+ejecutar los siguientes comandos:
+
+>CREATE USER 'klan'@'localhost' IDENTIFIED BY 'password';
+>GRANT ALL PRIVILEGES ON yumyum_ciencias TO klan@localhost;
+
+Dentro de la carpeta SQL, ejecutamos los scripts:
+
+>source modelo.sql;
+
+El script insertará las tablas necesarias para utilizar la BD
+así como la comida suficiente para insertar puestos.
+
+Salimos de mysql y regresamos a la carpeta que contiene el pom.xml
+para compilar y ejecutar el proyecto con:
+>mvn clean install tomcat7:run
+
+Una vez que el servidor esté levantado, podemos probar cada una 
+de las siguientes páginas:
+
+
+Páginas de ejemplo
+
+Página principal de la aplicación:
+http://localhost:8080/YumYum-Ciencias/
+
+Página para ver iniciar sesión como usuario:
+http://localhost:8080/YumYum-Ciencias/ingresoUsuario.xhtml
+
+Para registrar a un nuevo usuario:
+http://localhost:8080/YumYum-Ciencias/registro.xhtml
+
+Ingreso como administrador (para probarlo, se debe ingresar como
+'admin' con contraseña 'passwordAdmin'):
+http://localhost:8080/YumYum-Ciencias/ingresoAdministrador.xhtml
+
+Página destinada a agregar un puesto, estando dentro de la sesión 
+del administrador:
+http://localhost:8080/YumYum-Ciencias/agregaPuesto.xhtml
+
+Página destinada a agregar o eliminar comida, estando dentro de la sesión 
+del administrador:
+http://localhost:8080/YumYum-Ciencias/agregaPuesto.xhtml
+
+Página destinada a eliminar usuarios, estando dentro de la sesión 
+del administrador:
+http://localhost:8080/YumYum-Ciencias/agregaPuesto.xhtml
+
+Página que se encarga de ver el mapa de puestos:
+http://localhost:8080/YumYum-Ciencias/mapa.xhtml
